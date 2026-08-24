@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>everMind — 3 Propostas Visuais de UI (Matt Pocock Prototype Skill)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-studio: #030712;
+      --panel-bg: #0F172A;
+      --panel-border: rgba(255, 255, 255, 0.12);
+      --text-white: #F8FAFC;
+      --text-gray: #94A3B8;
+      
+      --accent-cyan: #38BDF8;
+      --accent-green: #10B981;
+      --accent-purple: #A855F7;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-geist-mono: 'Geist Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-studio);
+      color: var(--text-white);
+      font-family: var(--font-geist);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 90px;
+    }
+
+    /* Top Studio Controls */
+    .studio-header {
+      background: #090E1A;
+      border-bottom: 1px solid var(--panel-border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .studio-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .studio-logo {
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #38BDF8, #A855F7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .studio-badge {
+      font-size: 0.78rem;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-weight: 700;
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-size: 0.78rem;
+      color: var(--text-gray);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-toggle {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-gray);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-toggle:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFF;
+    }
+
+    .btn-toggle.active {
+      background: #38BDF8;
+      color: #030712;
+      border-color: #38BDF8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Main Workspace */
+    .studio-body {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      flex: 1;
+      gap: 32px;
+      padding: 28px 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Phone Device Mockup Container */
+    .phone-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .phone-device {
+      width: 390px;
+      height: 820px;
+      background: #000;
+      border-radius: 50px;
+      border: 8px solid #27272A;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(56, 189, 248, 0.12);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dynamic Island / Notch */
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 115px;
+      height: 28px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    .notch-camera { width: 10px; height: 10px; background: #18181B; border-radius: 50%; }
+    .notch-sensor { width: 7px; height: 7px; background: #09090B; border-radius: 50%; }
+
+    /* Status Bar */
+    .phone-status-bar {
+      height: 48px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 24px 8px 24px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      z-index: 40;
+    }
+
+    /* Phone Screen Inner Scrollable */
+    .phone-screen {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 18px 80px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scrollbar-width: none;
+    }
+    .phone-screen::-webkit-scrollbar { display: none; }
+
+    /* Bottom Navigation Bar */
+    .phone-nav-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: 12px;
+      z-index: 40;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: #94A3B8;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item.active { color: #38BDF8; }
+    .nav-icon { font-size: 1.25rem; }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 4px;
+      z-index: 45;
+    }
+
+    /* =================================================== */
+    /* VARIANT A: Warm Minimalist & High Contrast */
+    /* =================================================== */
+    .theme-minimal {
+      background: #090E17;
+      font-family: var(--font-geist);
+    }
+
+    .theme-minimal .ui-greeting {
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      letter-spacing: -0.03em;
+    }
+
+    .theme-minimal .ui-subgreeting {
+      font-size: 0.98rem;
+      color: #CBD5E1;
+      margin-top: 2px;
+    }
+
+    .theme-minimal .ui-brain-widget {
+      background: #131D31;
+      border: 2px solid rgba(56, 189, 248, 0.35);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-minimal .brain-avatar {
+      font-size: 2.2rem;
+      background: rgba(56, 189, 248, 0.15);
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .theme-minimal .ui-card {
+      background: #10192A;
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .theme-minimal .ui-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .theme-minimal .badge-mind { background: rgba(56, 189, 248, 0.2); color: #38BDF8; }
+    .theme-minimal .badge-move { background: rgba(245, 158, 11, 0.2); color: #F59E0B; }
+    .theme-minimal .badge-care { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+    .theme-minimal .badge-social { background: rgba(244, 63, 94, 0.2); color: #F43F5E; }
+
+    .theme-minimal .ui-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.35;
+    }
+
+    .theme-minimal .ui-card-desc {
+      font-size: 0.95rem;
+      color: #CBD5E1;
+      line-height: 1.5;
+    }
+
+    .theme-minimal .ui-btn {
+      background: #38BDF8;
+      color: #030712;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 1.02rem;
+      font-weight: 800;
+      min-height: 52px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* =================================================== */
+    /* VARIANT B: Playful Garden & Brain Evolution */
+    /* =================================================== */
+    .theme-playful {
+      background: radial-gradient(circle at top, #14231E 0%, #06110E 100%);
+      font-family: var(--font-geist);
+    }
+
+    .theme-playful .ui-greeting {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #ECFDF5;
+    }
+
+    .theme-playful .ui-subgreeting {
+      font-size: 0.98rem;
+      color: #A7F3D0;
+    }
+
+    .theme-playful .ui-brain-widget {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+      border: 2px solid rgba(16, 185, 129, 0.4);
+      border-radius: 22px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .theme-playful .brain-avatar {
+      font-size: 2.4rem;
+      background: #064E3B;
+      width: 62px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      border: 2px solid #34D399;
+    }
+
+    .theme-playful .ui-card {
+      background: #0C1D18;
+      border: 1.5px solid rgba(52, 211, 153, 0.25);
+      border-radius: 22px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .theme-playful .ui-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .theme-playful .badge-mind { background: rgba(56, 189, 248, 0.25); color: #7DD3FC; }
+    .theme-playful .badge-move { background: rgba(245, 158, 11, 0.25); color: #FCD34D; }
+    .theme-playful .badge-care { background: rgba(16, 185, 129, 0.25); color: #6EE7B7; }
+    .theme-playful .badge-social { background: rgba(244, 63, 94, 0.25); color: #FDA4AF; }
+
+    .theme-playful .ui-card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #F0FDF4;
+    }
+
+    .theme-playful .ui-card-desc {
+      font-size: 0.96rem;
+      color: #D1FAE5;
+    }
+
+    .theme-playful .ui-btn {
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      min-height: 54px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* =================================================== */
+    /* VARIANT C: Nordic Zen & Gentle Rhythm */
+    /* =================================================== */
+    .theme-zen {
+      background: #0D1117;
+      font-family: var(--font-geist);
+    }
+
+    .theme-zen .ui-greeting {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #F8FAFC;
+    }
+      color: #F8FAFC;
+    }
+
+    .theme-zen .ui-subgreeting {
+      font-size: 1.02rem;
+      color: #94A3B8;
+    }
+
+    .theme-zen .ui-brain-widget {
+      background: #161B22;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .theme-zen .brain-avatar {
+      font-size: 2.2rem;
+      background: #21262D;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .theme-zen .ui-card {
+      background: #161B22;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 26px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .theme-zen .ui-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #CBD5E1;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .theme-zen .ui-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .theme-zen .ui-card-desc {
+      font-size: 1rem;
+      color: #94A3B8;
+      line-height: 1.55;
+    }
+
+    .theme-zen .ui-btn {
+      background: #F8FAFC;
+      color: #0F172A;
+      border: none;
+      border-radius: 9999px;
+      padding: 14px 24px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      min-height: 54px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Details Panel */
+    .studio-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .detail-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .detail-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .detail-desc {
+      font-size: 0.94rem;
+      color: var(--text-gray);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .spec-item {
+      background: #040813;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .spec-label {
+      font-size: 0.72rem;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .spec-val {
+      font-size: 0.92rem;
+      color: #F8FAFC;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tokens-palette {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .token-swatch {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    /* Floating Prototype Switcher Pill (Matt Pocock Prototype Standard) */
+    .floating-switcher {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #020617;
+      border: 2px solid #38BDF8;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.35);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 1000;
+    }
+
+    .switcher-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid #38BDF8;
+      color: #38BDF8;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+
+    .switcher-btn:hover {
+      background: #38BDF8;
+      color: #000;
+    }
+
+    .switcher-label {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #F8FAFC;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .switcher-hint {
+      font-size: 0.74rem;
+      color: #94A3B8;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      padding-left: 12px;
+    }
+
+    /* Screen Specific States */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .game-cell {
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .game-cell:hover {
+      border-color: #38BDF8;
+      background: rgba(56, 189, 248, 0.15);
+      transform: scale(1.04);
+    }
+
+    @media (max-width: 992px) {
+      .studio-body { grid-template-columns: 1fr; }
+      .phone-container { align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Studio Controls Header -->
+  <header class="studio-header">
+    <div class="studio-brand">
+      <div class="studio-logo">everMind Studio</div>
+      <div class="studio-badge">Matt Pocock UI Prototype Pattern</div>
+    </div>
+
+    <!-- Variant Switcher -->
+    <div class="controls-group">
+      <span class="control-label">Variante (?variant=):</span>
+      <button class="btn-toggle active" id="btn-v-a" onclick="setVariant('A')">
+        <span>✨</span> Variante A: Warm Minimalist
+      </button>
+      <button class="btn-toggle" id="btn-v-b" onclick="setVariant('B')">
+        <span>🌱</span> Variante B: Playful Garden
+      </button>
+      <button class="btn-toggle" id="btn-v-c" onclick="setVariant('C')">
+        <span>🧘</span> Variante C: Nordic Zen
+      </button>
+    </div>
+
+    <!-- Screen Switcher -->
+    <div class="controls-group">
+      <span class="control-label">Tela:</span>
+      <button class="btn-toggle active" id="btn-screen-1" onclick="setScreen('home', 'btn-screen-1')">
+        <span>☀️</span> Tela 1: Home
+      </button>
+      <button class="btn-toggle" id="btn-screen-2" onclick="setScreen('braingym', 'btn-screen-2')">
+        <span>🧠</span> Tela 2: Ginástica
+      </button>
+      <button class="btn-toggle" id="btn-screen-5" onclick="setScreen('social', 'btn-screen-5')">
+        <span>❤️</span> Tela 5: Conexão
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <main class="studio-body">
+
+    <!-- Phone Device Simulator -->
+    <div class="phone-container">
+      <div class="phone-device theme-minimal" id="phone-app">
+        <!-- Notch -->
+        <div class="phone-notch">
+          <div class="notch-sensor"></div>
+          <div class="notch-camera"></div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="phone-status-bar">
+          <span>09:41</span>
+          <span>5G • 100% 🔋</span>
+        </div>
+
+        <!-- Screen Inner Content -->
+        <div class="phone-screen" id="screen-viewport"></div>
+
+        <!-- Bottom Navigation Bar -->
+        <div class="phone-nav-bar">
+          <div class="nav-item active" onclick="setScreen('home', 'btn-screen-1')">
+            <span class="nav-icon">☀️</span>
+            <span>Hoje</span>
+          </div>
+          <div class="nav-item" onclick="setScreen('braingym', 'btn-screen-2')">
+            <span class="nav-icon">🧠</span>
+            <span>Cérebro</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">🎲</span>
+            <span>Descobrir</span>
+          </div>
+          <div class="nav-item" onclick="setScreen('social', 'btn-screen-5')">
+            <span class="nav-icon">❤️</span>
+            <span>Conexão</span>
+          </div>
+          <div class="nav-item">
+            <span class="nav-icon">📊</span>
+            <span>Semana</span>
+          </div>
+        </div>
+
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- Design Details & Rationale Panel -->
+    <div class="studio-details">
+      <!-- Active Proposal Rationale -->
+      <div class="detail-card">
+        <div class="detail-title" id="info-title">
+          <span>✨</span> Variante A: Warm Minimalist & High Contrast
+        </div>
+        <p class="detail-desc" id="info-desc">
+          Foco total em <strong>legibilidade sênior extrema, conforto visual e navegação linear</strong>. Fundo escuro aveludado (#090E17), cartões bem contrastados, tipografia de 20sp e botões robustos de 54dp.
+        </p>
+
+        <div class="tokens-palette" id="info-palette">
+          <div class="token-swatch" style="background: #090E17; color: #FFF;">#090E17</div>
+          <div class="token-swatch" style="background: #10192A; color: #FFF;">#10192A</div>
+          <div class="token-swatch" style="background: #38BDF8; color: #000;">#38BDF8</div>
+          <div class="token-swatch" style="background: #10B981; color: #000;">#10B981</div>
+          <div class="token-swatch" style="background: #F59E0B; color: #000;">#F59E0B</div>
+        </div>
+
+        <div class="spec-grid">
+          <div class="spec-item">
+            <div class="spec-label">Fonte & Peso</div>
+            <div class="spec-val" id="spec-font">Inter (700 / 800)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Contraste WCAG</div>
+            <div class="spec-val" style="color: #10B981;">AAA (8.4:1)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Botões de Ação</div>
+            <div class="spec-val">Altura 54dp (Área 54x350)</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Sensação / Tom</div>
+            <div class="spec-val" id="spec-tone">Sólido, Claro, Acolhedor</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- React Native Implementation Blueprint -->
+      <div class="detail-card">
+        <div class="detail-title">
+          <span>⚛️</span> Mapeamento dos Componentes React Native
+        </div>
+        <p class="detail-desc">
+          Como os elementos visuais acima se traduzem na arquitetura de código em <code>src/</code>:
+        </p>
+
+        <div class="spec-grid" style="grid-template-columns: 1fr;">
+          <div class="spec-item">
+            <div class="spec-label">Componente de Cartão de Desafio</div>
+            <div class="spec-val"><code>src/ui/cards/DailyChallengeCard.tsx</code></div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Widget do Cérebro Virtual</div>
+            <div class="spec-val"><code>src/modules/gamification/VirtualBrainHeader.tsx</code></div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Engine dos Mini-Jogos (Deep Module)</div>
+            <div class="spec-val"><code>src/modules/brain/engine/MemoryGridEngine.ts</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating Prototype Switcher Bar (Pocock Prototype Pattern) -->
+  <div class="floating-switcher">
+    <button class="switcher-btn" onclick="prevVariant()" title="Variante Anterior (Seta Esquerda)">◀</button>
+    <div class="switcher-label" id="switcher-label">Variante A (Warm Minimalist)</div>
+    <button class="switcher-btn" onclick="nextVariant()" title="Próxima Variante (Seta Direita)">▶</button>
+    <div class="switcher-hint">Dica: Use as setas <code>←</code> e <code>→</code> do teclado</div>
+  </div>
+
+  <script>
+    const variants = ['A', 'B', 'C'];
+    let currentVariant = 'C';
+    let currentScreen = 'home';
+    let completedChallenges = { c1: false, c2: false, c3: false };
+
+    // Read variant from URL query param if present (?variant=A)
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialVariant = urlParams.get('variant')?.toUpperCase();
+    if (variants.includes(initialVariant)) {
+      currentVariant = initialVariant;
+    }
+
+    const screenData = {
+      home: `
+        <div>
+          <div class="ui-greeting">Bom dia, Luís! ☀️</div>
+          <div class="ui-subgreeting">Pronto para os seus 3 cuidados de hoje?</div>
+        </div>
+
+        <!-- Brain Widget -->
+        <div class="ui-brain-widget">
+          <div class="brain-avatar">🧠✨</div>
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong style="font-size: 1.02rem;">Brain Kid (Nível 2)</strong>
+              <span style="font-size: 0.82rem; color: #38BDF8; font-weight: 700;">8 / 20 Feitos</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+              <div id="brain-progress" style="background: #38BDF8; width: 40%; height: 100%; transition: width 0.3s;"></div>
+            </div>
+            <div style="font-size: 0.78rem; color: #94A3B8; margin-top: 4px;">🔥 6 dias de consistência com você!</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; margin-top: 4px;">
+          Tríade do Dia • 3 Micro-Desafios
+        </div>
+
+        <!-- Desafio 1: Mente -->
+        <div class="ui-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ui-badge badge-mind">🧠 Mente</span>
+            <span style="font-size: 0.8rem; color: #94A3B8;">~3 min</span>
+          </div>
+          <div class="ui-card-title">Encontre as 5 Imagens</div>
+          <div class="ui-card-desc">Exercite sua memória visual localizando os 5 pares na floresta encantada.</div>
+          <button class="ui-btn" id="btn-c1" onclick="toggleComplete('c1', this)">
+            <span>🎮</span> Jogar Agora
+          </button>
+        </div>
+
+        <!-- Desafio 2: Movimento -->
+        <div class="ui-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ui-badge badge-move">🚶 Movimento</span>
+            <span style="font-size: 0.8rem; color: #94A3B8;">10 min</span>
+          </div>
+          <div class="ui-card-title">Caminhada Leve de 10 Minutos</div>
+          <div class="ui-card-desc">Dê uma volta relaxante na rua, no quintal ou até dentro de casa.</div>
+          <button class="ui-btn" id="btn-c2" onclick="toggleComplete('c2', this)">
+            <span>✓</span> Marcar como Concluído
+          </button>
+        </div>
+
+        <!-- Desafio 3: Autocuidado -->
+        <div class="ui-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ui-badge badge-care">🥕 Autocuidado</span>
+            <span style="font-size: 0.8rem; color: #94A3B8;">Refeição</span>
+          </div>
+          <div class="ui-card-title">Fruta ou Vegetal no Prato</div>
+          <div class="ui-card-desc">Escolha uma refeição de hoje e acrescente uma porção colorida e fresca.</div>
+          <button class="ui-btn" id="btn-c3" onclick="toggleComplete('c3', this)">
+            <span>✓</span> Missão Concluída
+          </button>
+        </div>
+      `,
+
+      braingym: `
+        <div>
+          <div class="ui-greeting">Ginástica Cerebral 🧠</div>
+          <div class="ui-subgreeting">Treine memória, atenção e agilidade sem pressa.</div>
+        </div>
+
+        <div class="ui-card" style="border-color: #38BDF8;">
+          <div class="ui-badge badge-mind">🔢 Sequência Numérica</div>
+          <div class="ui-card-title">Qual número completa a sequência?</div>
+          <div style="font-size: 1.6rem; font-weight: 900; text-align: center; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 12px; font-family: monospace; letter-spacing: 4px; color: #38BDF8;">
+            2 ➔ 4 ➔ 6 ➔ [ ? ]
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 6px;">
+            <button class="ui-btn" style="min-height: 48px; font-size: 1.2rem;" onclick="alert('Excelente raciocínio! 2 + 2 + 2 = 8 🌟')">8</button>
+            <button class="ui-btn" style="min-height: 48px; font-size: 1.2rem; background: rgba(255,255,255,0.1); color:#FFF;" onclick="alert('Quase lá! Tente somar de 2 em 2 🌱')">7</button>
+            <button class="ui-btn" style="min-height: 48px; font-size: 1.2rem; background: rgba(255,255,255,0.1); color:#FFF;" onclick="alert('Quase lá! Tente somar de 2 em 2 🌱')">9</button>
+          </div>
+        </div>
+
+        <div class="ui-card">
+          <div class="ui-badge badge-mind">👀 Atenção Visual</div>
+          <div class="ui-card-title">Encontre o objeto diferente:</div>
+          <div class="game-grid">
+            <div class="game-cell" onclick="alert('Tente outro!')">🍎</div>
+            <div class="game-cell" onclick="alert('Tente outro!')">🍎</div>
+            <div class="game-cell" onclick="alert('Tente outro!')">🍎</div>
+            <div class="game-cell" onclick="alert('Tente outro!')">🍎</div>
+            <div class="game-cell" style="border-color:#F59E0B;" onclick="alert('Parabéns! Você encontrou o morango! 🍓🎉')">🍓</div>
+            <div class="game-cell" onclick="alert('Tente outro!')">🍎</div>
+          </div>
+        </div>
+      `,
+
+      social: `
+        <div>
+          <div class="ui-greeting">Desafio da Conexão ❤️</div>
+          <div class="ui-subgreeting">Fortaleça laços com quem você tem carinho.</div>
+        </div>
+
+        <div class="ui-card" style="border-color: #F43F5E;">
+          <div class="ui-badge badge-social">📞 Ligação Afetiva</div>
+          <div class="ui-card-title">Quem você não vê há algum tempo?</div>
+          <div class="ui-card-desc">
+            Escolha um filho, neto, amigo ou parente querido e faça uma chamada curta com a pergunta do dia:
+          </div>
+          <div style="background: rgba(244, 63, 94, 0.12); padding: 14px; border-radius: 12px; border-left: 4px solid #F43F5E; font-size: 1.05rem; font-weight: 700; color: #FECDD3;">
+            "Como foi o seu dia hoje?"
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+            <button class="ui-btn" style="background: #F43F5E; color: #FFF;" onclick="alert('Maravilhoso! Uma conversa aquece o coração! ❤️')">
+              <span>📞</span> Eu Vou Ligar Agora
+            </button>
+            <button class="ui-btn" style="background: rgba(255,255,255,0.08); color: #CBD5E1;" onclick="alert('Lembrete agendado para o fim da tarde! ⏰')">
+              <span>⏰</span> Lembrar Mais Tarde
+            </button>
+          </div>
+        </div>
+      `
+    };
+
+    function renderScreen() {
+      const viewport = document.getElementById('screen-viewport');
+      viewport.innerHTML = screenData[currentScreen];
+    }
+
+    function setVariant(v) {
+      currentVariant = v;
+      const phone = document.getElementById('phone-app');
+
+      // Update URL query param without reload
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('variant', v);
+      window.history.replaceState({}, '', newUrl);
+
+      // Update top buttons
+      ['btn-v-a', 'btn-v-b', 'btn-v-c'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      document.getElementById('btn-v-' + v.toLowerCase()).classList.add('active');
+
+      // Update Rationale Sidebar and Floating Switcher
+      const title = document.getElementById('info-title');
+      const desc = document.getElementById('info-desc');
+      const font = document.getElementById('spec-font');
+      const tone = document.getElementById('spec-tone');
+      const switcherLabel = document.getElementById('switcher-label');
+
+      if (v === 'A') {
+        phone.className = 'phone-device theme-minimal';
+        title.innerHTML = '<span>✨</span> Variante A: Warm Minimalist & High Contrast';
+        desc.innerHTML = 'Foco total em <strong>legibilidade sênior extrema, conforto visual e navegação linear</strong>. Fundo escuro aveludado (#090E17), cartões bem contrastados, tipografia de 20sp e botões robustos de 54dp.';
+        font.innerText = 'Inter (700 / 800)';
+        tone.innerText = 'Sólido, Claro, Acolhedor';
+        switcherLabel.innerText = 'Variante A (Warm Minimalist)';
+      } else if (v === 'B') {
+        phone.className = 'phone-device theme-playful';
+        title.innerHTML = '<span>🌱</span> Variante B: Playful Garden & Brain Evolution';
+        desc.innerHTML = 'Foco em <strong>gamificação viva e lúdica</strong>. Utiliza a metáfora de um jardim botânico digital onde cada desafio concluído faz o cérebro florescer com tons de esmeralda, menta e lilás brilhante.';
+        font.innerText = 'Plus Jakarta Sans (800)';
+        tone.innerText = 'Lúdico, Vibrante, Estimulante';
+        switcherLabel.innerText = 'Variante B (Playful Garden)';
+      } else if (v === 'C') {
+        phone.className = 'phone-device theme-zen';
+        title.innerHTML = '<span>🧘</span> Variante C: Nordic Zen & Gentle Rhythm';
+        desc.innerHTML = 'Foco em <strong>paz mental, desaceleração e conforto</strong>. Formas orgânicas ultra-arredondadas (pílulas), paleta neutra e ritmo diário sereno sem pressa.';
+        font.innerText = 'Outfit (600 / 700)';
+        tone.innerText = 'Sereno, Zen, Desacelerado';
+        switcherLabel.innerText = 'Variante C (Nordic Zen)';
+      }
+    }
+
+    function nextVariant() {
+      let idx = variants.indexOf(currentVariant);
+      let nextIdx = (idx + 1) % variants.length;
+      setVariant(variants[nextIdx]);
+    }
+
+    function prevVariant() {
+      let idx = variants.indexOf(currentVariant);
+      let prevIdx = (idx - 1 + variants.length) % variants.length;
+      setVariant(variants[prevIdx]);
+    }
+
+    function setScreen(screen, btnId) {
+      currentScreen = screen;
+      renderScreen();
+
+      ['btn-screen-1', 'btn-screen-2', 'btn-screen-5'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+      });
+      if (document.getElementById(btnId)) {
+        document.getElementById(btnId).classList.add('active');
+      }
+    }
+
+    function toggleComplete(id, btn) {
+      completedChallenges[id] = !completedChallenges[id];
+      if (completedChallenges[id]) {
+        btn.innerHTML = '<span>🎉</span> Concluído!';
+        btn.style.background = '#10B981';
+        btn.style.color = '#000';
+      } else {
+        btn.innerHTML = '<span>✓</span> Marcar como Concluído';
+        btn.style.background = '#38BDF8';
+        btn.style.color = '#030712';
+      }
+
+      let count = Object.values(completedChallenges).filter(Boolean).length;
+      let pct = 40 + (count * 15);
+      const bar = document.getElementById('brain-progress');
+      if (bar) bar.style.width = pct + '%';
+    }
+
+    // Keyboard navigation (Matt Pocock UI prototype rule)
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === 'ArrowRight') nextVariant();
+      if (e.key === 'ArrowLeft') prevVariant();
+    });
+
+    // Initial render
+    setVariant(currentVariant);
+    renderScreen();
+  </script>
+</body>
+</html>

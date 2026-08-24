@@ -1,0 +1,41 @@
+{
+  "name": "evermind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuisAbrantes/everMind.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/LuisAbrantes/everMind/issues"
+  },
+  "homepage": "https://github.com/LuisAbrantes/everMind#readme",
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "@supabase/supabase-js": "^2.112.3",
+    "@types/react": "^19.2.18",
+    "@types/react-native": "^0.72.8",
+    "nativewind": "^4.2.6",
+    "react": "^19.2.8",
+    "react-native": "^0.86.2",
+    "react-native-url-polyfill": "^4.0.0",
+    "tailwindcss": "^3.4.19"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.9.3"
+  }
+}

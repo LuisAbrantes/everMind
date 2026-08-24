@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>everMind — Universal AI-Driven Harness & React Native Architecture Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #07090E;
+      --bg-card: #0F172A;
+      --bg-card-hover: #1E293B;
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-accent: rgba(56, 189, 248, 0.4);
+      
+      --text-primary: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --text-muted: #94A3B8;
+      
+      --accent-cyan: #38BDF8;
+      --accent-cyan-glow: rgba(56, 189, 248, 0.18);
+      --accent-green: #10B981;
+      --accent-green-glow: rgba(16, 185, 129, 0.18);
+      --accent-purple: #A855F7;
+      --accent-purple-glow: rgba(168, 85, 247, 0.18);
+      --accent-rose: #F43F5E;
+      --accent-rose-glow: rgba(244, 63, 94, 0.18);
+      --accent-amber: #F59E0B;
+      --accent-amber-glow: rgba(245, 158, 11, 0.18);
+      --accent-rn: #61DAFB;
+
+      --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'Geist Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header & Hero */
+    header {
+      padding: 48px 0 36px 0;
+      border-bottom: 1px solid var(--border-color);
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 55%),
+                  radial-gradient(circle at top left, rgba(168, 85, 247, 0.12), transparent 55%);
+    }
+
+    .badge-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-rn {
+      background: rgba(97, 218, 251, 0.15);
+      color: #61DAFB;
+      border: 1px solid rgba(97, 218, 251, 0.4);
+    }
+
+    .badge-cyan {
+      background: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+      border: 1px solid var(--border-accent);
+    }
+
+    .badge-purple {
+      background: var(--accent-purple-glow);
+      color: var(--accent-purple);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .badge-green {
+      background: var(--accent-green-glow);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #FFFFFF 30%, #38BDF8 70%, #A855F7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 980px;
+    }
+
+    /* Tabs Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin: 32px 0 40px 0;
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Styles */
+    .section-title {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      margin-bottom: 28px;
+      max-width: 1000px;
+    }
+
+    /* Grid & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: var(--bg-card-hover);
+    }
+
+    .card-accent-rn { border-top: 4px solid var(--accent-rn); }
+    .card-accent-cyan { border-top: 4px solid var(--accent-cyan); }
+    .card-accent-emerald { border-top: 4px solid var(--accent-green); }
+    .card-accent-purple { border-top: 4px solid var(--accent-purple); }
+    .card-accent-rose { border-top: 4px solid var(--accent-rose); }
+    .card-accent-amber { border-top: 4px solid var(--accent-amber); }
+    .card-accent-red { border-top: 4px solid #EF4444; }
+
+    .card-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-text {
+      color: var(--text-secondary);
+      font-size: 0.96rem;
+      line-height: 1.6;
+    }
+
+    .card-list {
+      list-style: none;
+      margin-top: 14px;
+    }
+
+    .card-list li {
+      position: relative;
+      padding-left: 22px;
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+    }
+
+    .card-list li::before {
+      content: "➔";
+      position: absolute;
+      left: 0;
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+    }
+
+    /* Screen Mapping Cards */
+    .screen-card {
+      background: #0B1120;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+
+    .screen-card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.1);
+    }
+
+    .screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .screen-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+    }
+
+    .screen-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .screen-purpose {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+      line-height: 1.55;
+    }
+
+    .screen-components {
+      background: #040813;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 0.88rem;
+      color: #94A3B8;
+      font-family: var(--font-mono);
+    }
+
+    /* Gamification & Evolution Visualizer */
+    .evolution-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #020617;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 14px;
+      padding: 24px 32px;
+      margin: 24px 0 36px 0;
+      gap: 16px;
+      overflow-x: auto;
+    }
+
+    .evolution-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    .evolution-icon {
+      font-size: 2.6rem;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.4));
+    }
+
+    .evolution-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .evolution-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .evolution-arrow {
+      font-size: 1.6rem;
+      color: var(--accent-purple);
+      font-weight: 800;
+    }
+
+    /* Árvore de Diretórios */
+    .tree-container {
+      background: #020617;
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .tree-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tree-code {
+      font-family: var(--font-mono);
+      font-size: 0.94rem;
+      line-height: 1.8;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .tree-folder { color: #F8FAFC; font-weight: 700; }
+    .tree-file { color: var(--accent-cyan); font-weight: 500; }
+    .tree-comment { color: #94A3B8; font-style: italic; font-weight: 400; }
+    .tree-highlight { color: var(--accent-green); font-weight: 700; }
+    .tree-purple { color: var(--accent-purple); font-weight: 600; }
+    .tree-rn { color: #61DAFB; font-weight: 600; }
+
+    /* Prompts Cards */
+    .prompt-card {
+      background: #020617;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 28px;
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .prompt-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .copy-btn {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-cyan);
+      color: #000;
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #000;
+    }
+
+    .prompt-body {
+      font-family: var(--font-mono);
+      font-size: 0.91rem;
+      line-height: 1.75;
+      color: #E2E8F0;
+      white-space: pre-wrap;
+      background: #090D16;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .prompt-tag {
+      color: var(--accent-cyan);
+      font-weight: bold;
+    }
+
+    .prompt-param {
+      color: var(--accent-amber);
+    }
+
+    .callout {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 5px solid var(--accent-cyan);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 28px 0;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .callout-rn {
+      background: rgba(97, 218, 251, 0.08);
+      border-left-color: #61DAFB;
+    }
+
+    .callout-purple {
+      background: rgba(168, 85, 247, 0.08);
+      border-left-color: var(--accent-purple);
+    }
+
+    .callout-green {
+      background: rgba(16, 185, 129, 0.08);
+      border-left-color: var(--accent-green);
+    }
+
+    .callout-title {
+      font-weight: 800;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+    }
+
+    .callout-rn .callout-title {
+      color: #61DAFB;
+    }
+
+    .callout-purple .callout-title {
+      color: var(--accent-purple);
+    }
+
+    .callout-green .callout-title {
+      color: var(--accent-green);
+    }
+
+    /* Badges Grid for System of Rewards */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .achievement-item {
+      background: #040813;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .achievement-medal {
+      font-size: 1.8rem;
+    }
+
+    .achievement-info h4 {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .achievement-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.1rem; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .evolution-track { flex-direction: column; gap: 20px; }
+      .evolution-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="badge-bar">
+        <span class="badge badge-rn">⚛️ React Native + TypeScript</span>
+        <span class="badge badge-cyan">Universal Agnostic Harness</span>
+        <span class="badge badge-purple">Cognitive Longevity & Gamification</span>
+        <span class="badge badge-green">Zero-Guilt Streak Psychology</span>
+      </div>
+      <h1 class="hero-title">everMind — AI Harness & Mobile Architecture</h1>
+      <p class="hero-subtitle">
+        Guia Metodológico Agnóstico a Plataformas de IA, Arquitetura Mobile React Native (Offline-First), Mapeamento de 7 Telas e Motor de Gamificação Acolhedora.
+      </p>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab(event, 'tab-metodo')">
+        <span>📘</span> 1. Harness Agnóstico & Filosofia
+      </button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-rn-arch')">
+        <span>⚛️</span> 2. Arquitetura React Native
+      </button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-telas')">
+        <span>📱</span> 3. Telas & Fluxos do Usuário
+      </button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-recompensas')">
+        <span>🏆</span> 4. Gamificação, Streaks & Cérebro
+      </button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-agentes-harness')">
+        <span>🤖</span> 5. Agentes & Harnesses (.agents/)
+      </button>
+      <button class="tab-btn" onclick="switchTab(event, 'tab-prompts')">
+        <span>📋</span> 6. Templates de Prompts
+      </button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: Harness Agnóstico & Filosofia -->
+    <!-- ========================================== -->
+    <div id="tab-metodo" class="tab-content active">
+      <h2 class="section-title">O Que É um AI-Driven Harness 100% Agnóstico?</h2>
+      <p class="section-desc">
+        Nossa arquitetura de Harness <strong>não depende do OpenAI Codex ou de ferramentas proprietárias</strong>. Ela é um padrão universal de engenharia baseado em especificações Markdown canônicas (<code>CONTEXT.md</code>, <code>docs/DECISIONS.md</code> e <code>.agents/harnesses/*.md</code>) que orienta qualquer agente de IA (Antigravity, Claude Code, Cursor, Gemini, Codex, etc.) de forma determinística e empática.
+      </p>
+
+      <div class="grid-2">
+        <div class="card card-accent-red">
+          <div class="card-title">⚠️ Riscos Sem o Harness no everMind</div>
+          <p class="card-text">
+            O que agentes não restringidos costumam errar em apps de saúde e longevidade:
+          </p>
+          <ul class="card-list">
+            <li><strong>Copywriting Punitivo:</strong> Exibir "Você perdeu seu streak de 6 dias", gerando ansiedade e abandono em usuários mais velhos.</li>
+            <li><strong>Falta de Acessibilidade:</strong> Adicionar textos pequenos, baixo contraste ou elementos clicáveis minúsculos.</li>
+            <li><strong>Sobrecarga Cognitiva:</strong> Criar mini-jogos matemáticos punitivos com cronômetro regressivo agressivo.</li>
+            <li><strong>Acoplamento de Código:</strong> Misturar lógica de sensores móveis, persistência e UI em um arquivo espaguete.</li>
+          </ul>
+        </div>
+
+        <div class="card card-accent-cyan">
+          <div class="card-title">✅ Benefícios com o Harness Agnóstico</div>
+          <p class="card-text">
+            Como os guard rails canônicos blindam o desenvolvimento no React Native:
+          </p>
+          <ul class="card-list">
+            <li><strong>Ordem de Leitura Estrita:</strong> Todo agente lê <code>docs/DECISIONS.md</code> antes de alterar código ou criar componentes.</li>
+            <li><strong>Política Anti-Culpa Obrigatória:</strong> Mensagens de fallback gentil ("🌱 Tudo bem! Hoje é um novo dia") validadas em testes.</li>
+            <li><strong>Deep Modules & Seams Limpos:</strong> Lógica de gamificação e mini-jogos isoladas por interfaces TypeScript testáveis via TDD.</li>
+            <li><strong>Portabilidade Total:</strong> Funciona perfeitamente em qualquer editor, agente de linha de comando ou IDE.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-green">
+        <div class="callout-title">🌿 Os 4 Pilares da Longevidade no everMind</div>
+        O aplicativo organiza a rotina em torno de 4 eixos essenciais de saúde integrada:
+        <strong>1. Mente</strong> (Estimulação cognitiva, memória, vocabulário, música),
+        <strong>2. Movimento</strong> (Caminhada leve de 10 min, quintal/casa),
+        <strong>3. Autocuidado</strong> (Hidratação, fruta/vegetal, higiene do sono), e
+        <strong>4. Conexão</strong> (Afeto, telefonemas e conversas familiares).
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: Arquitetura React Native -->
+    <!-- ========================================== -->
+    <div id="tab-rn-arch" class="tab-content">
+      <h2 class="section-title">Arquitetura Mobile (React Native + TypeScript)</h2>
+      <p class="section-desc">
+        Estrutura técnica otimizada para performance mobile, operação Offline-First e acessibilidade sênior máxima.
+      </p>
+
+      <div class="grid-3">
+        <div class="card card-accent-rn">
+          <div class="card-title">📱 Core Mobile Stack</div>
+          <p class="card-text">
+            <strong>React Native + TypeScript (Expo SDK):</strong>
+          </p>
+          <ul class="card-list">
+            <li>Navegação: <code>@react-navigation/native</code> (Stack + Bottom Tabs com ícones grandes).</li>
+            <li>Gerenciamento de Estado: <code>Zustand</code> (leve, performático e desacoplado da UI).</li>
+            <li>Animações Suaves: <code>react-native-reanimated</code> para evolução do Cérebro Virtual.</li>
+          </ul>
+        </div>
+
+        <div class="card card-accent-emerald">
+          <div class="card-title">💾 Offline-First Storage</div>
+          <p class="card-text">
+            <strong>Persistência Local Confiável:</strong>
+          </p>
+          <ul class="card-list">
+            <li>Motor: <code>react-native-mmkv</code> ou <code>AsyncStorage</code> para acesso ultra-rápido síncrono.</li>
+            <li>Resiliência: Todos os 3 desafios diários e o estado de streaks funcionam sem internet.</li>
+            <li>Sincronização em background transparente quando houver conectividade.</li>
+          </ul>
+        </div>
+
+        <div class="card card-accent-purple">
+          <div class="card-title">🔊 Áudio, Haptics & Acessibilidade</div>
+          <p class="card-text">
+            <strong>Feedback Sensorial Agradável:</strong>
+          </p>
+          <ul class="card-list">
+            <li>Áudio: <code>expo-av</code> para mini-jogos musicais e sons sutis de vitória.</li>
+            <li>Haptics: <code>expo-haptics</code> para confirmações táteis de conclusão.</li>
+            <li>WCAG AAA: Suporte a <em>Dynamic Type</em> (fontes escaláveis) e áreas de toque ≥ 48x48dp.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Estrutura de Código React Native -->
+      <div class="callout callout-rn">
+        <div class="callout-title">📂 Estrutura de Pastas de Código (`src/`)</div>
+        <code>src/</code> é organizado em <strong>Deep Modules</strong> modulares:
+        <br><br>
+        • <code>src/modules/brain/</code> (Mini-jogos de memória, sequência, palavras, atenção, música)<br>
+        • <code>src/modules/gamification/</code> (Máquina de estados do Cérebro Baby➔Mega, Streaks gentis, Conquistas)<br>
+        • <code>src/modules/habits/</code> (Gerenciador dos 4 pilares: Mente, Movimento, Cuidado, Conexão)<br>
+        • <code>src/screens/</code> (As 7 telas React Native focadas puramente em apresentação e composição)<br>
+        • <code>src/ui/</code> (Design System acessível: botões grandes, cards contrastantes, tipografia sênior)
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: Telas & Fluxos do Usuário -->
+    <!-- ========================================== -->
+    <div id="tab-telas" class="tab-content">
+      <h2 class="section-title">Mapeamento das 7 Telas do everMind</h2>
+      <p class="section-desc">
+        Detalhamento das telas mapeadas no Trello e sua transposição para componentes nativos React Native.
+      </p>
+
+      <div class="grid-3">
+        <!-- TELA 1 -->
+        <div class="screen-card card-accent-cyan">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 01</span>
+              <span>☀️</span>
+            </div>
+            <div class="screen-name">HomeScreen (Bom Dia)</div>
+            <div class="screen-purpose">
+              Onboarding diário com <strong>3 desafios diários aleatórios</strong> dos 4 pilares para evitar sobrecarga.
+            </div>
+          </div>
+          <div class="screen-components">
+            • <code>DailyGreetingHeader</code><br>
+            • <code>DailyChallengeCard</code> (3 itens)<br>
+            • <code>VirtualBrainMiniWidget</code><br>
+            • <code>StreakGentleCounter</code>
+          </div>
+        </div>
+
+        <!-- TELA 2 -->
+        <div class="screen-card card-accent-purple">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 02</span>
+              <span>🧠</span>
+            </div>
+            <div class="screen-name">BrainGymScreen</div>
+            <div class="screen-purpose">
+              Central de 5 micro-jogos cognitivos de baixa fricção e sem estresse de tempo.
+            </div>
+          </div>
+          <div class="screen-components">
+            • <code>MemoryGridGame</code> (5 imagens)<br>
+            • <code>NumberSequenceGame</code> (2→4→6→?)<br>
+            • <code>WordBuilderGame</code> (Letra X)<br>
+            • <code>SpotDifferenceGame</code><br>
+            • <code>MusicRecognitionGame</code>
+          </div>
+        </div>
+
+        <!-- TELA 3 -->
+        <div class="screen-card card-accent-amber">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 03</span>
+              <span>🚶</span>
+            </div>
+            <div class="screen-name">BodyMovementScreen</div>
+            <div class="screen-purpose">
+              Incentivo ao movimento leve (caminhada de 10 min na rua, quintal ou casa).
+            </div>
+          </div>
+          <div class="screen-components">
+            • <code>MovementIllustrationCard</code><br>
+            • <code>TimerOptionalGuide</code><br>
+            • <code>CompleteButton</code> com confetes
+          </div>
+        </div>
+
+        <!-- TELA 4 -->
+        <div class="screen-card card-accent-emerald">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 04</span>
+              <span>🥕</span>
+            </div>
+            <div class="screen-name">SelfCareScreen</div>
+            <div class="screen-purpose">
+              Autocuidado em 3 frentes: fruta/vegetal, hidratação constante e sono.
+            </div>
+          </div>
+          <div class="screen-components">
+            • <code>FruitVeggieMissionCard</code><br>
+            • <code>WaterIntakeToggle</code> [ SIM ]<br>
+            • <code>SleepHygieneCard</code>
+          </div>
+        </div>
+
+        <!-- TELA 5 -->
+        <div class="screen-card card-accent-rose">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 05</span>
+              <span>❤️</span>
+            </div>
+            <div class="screen-name">SocialConnectionScreen</div>
+            <div class="screen-purpose">
+              Combate ao isolamento social com micro-ações de afeto e ligação familiar.
+            </div>
+          </div>
+          <div class="screen-components">
+            • <code>ContactSelectorOrInput</code><br>
+            • <code>ConversationPrompt</code> ("Como foi seu dia?")<br>
+            • Botões: [ LEMBRAR MAIS TARDE ] | [ EU VOU LIGAR ]
+          </div>
+        </div>
+
+        <!-- TELA 6 -->
+        <div class="screen-card card-accent-cyan">
+          <div>
+            <div class="screen-header">
+              <span class="screen-num">TELA 06</span>
+              <span>🎲</span>
+            </div>
+            <div class="screen-name">DiscoveryScreen</div>
+            <div class="screen-purpose">
+              Estímulo à neuroplasticidade através de 7 categorias e botão surpresa.
+            </div>
+          </div>
+          <div class="screen-components">
+            • 7 Categorias: Música, Leitura, Desenho, Planta, Receita, Palavra, Foto<br>
+            • Botão <strong>[ SURPREENDER-ME ]</strong> com animação lúdica
+          </div>
+        </div>
+      </div>
+
+      <!-- TELA 7 EM DESTAQUE -->
+      <div class="card card-accent-purple" style="margin-top: 10px;">
+        <div class="screen-header">
+          <span class="screen-num" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);">TELA 07 • FECHAMENTO DE CICLO</span>
+          <span style="font-size: 1.4rem;">🌟</span>
+        </div>
+        <h3 class="card-title">Tela 7: WeeklySummaryScreen (Minha Semana)</h3>
+        <p class="card-text">
+          Painel de retrospectiva e consolidação de hábitos sem cobrança ou foco em falhas:
+        </p>
+        <div class="grid-4" style="margin-top: 18px; margin-bottom: 12px;">
+          <div style="background: #040813; padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent-cyan);">
+            <strong style="color: var(--accent-cyan); font-size: 1.1rem;">🧠 4</strong>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Atividades mentais concluídas</p>
+          </div>
+          <div style="background: #040813; padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent-amber);">
+            <strong style="color: var(--accent-amber); font-size: 1.1rem;">🚶 3</strong>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Dias com caminhada e movimento</p>
+          </div>
+          <div style="background: #040813; padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent-green);">
+            <strong style="color: var(--accent-green); font-size: 1.1rem;">🌿 5</strong>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Momentos de autocuidado e água</p>
+          </div>
+          <div style="background: #040813; padding: 14px; border-radius: 8px; border-left: 4px solid var(--accent-rose);">
+            <strong style="color: var(--accent-rose); font-size: 1.1rem;">👥 2</strong>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Ligações ou contatos de afeto</p>
+          </div>
+        </div>
+        <div style="background: rgba(168, 85, 247, 0.12); padding: 12px 18px; border-radius: 8px; font-weight: 700; color: #E9D5FF; text-align: center;">
+          🎉 "Parabéns! Você está construindo bons hábitos no seu próprio ritmo!"
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: Gamificação, Streaks & Cérebro -->
+    <!-- ========================================== -->
+    <div id="tab-recompensas" class="tab-content">
+      <h2 class="section-title">O Motor de Gamificação Acolhedora</h2>
+      <p class="section-desc">
+        Engenharia comportamental focada em psicologia positiva, incentivo sustentável e metáforas visuais.
+      </p>
+
+      <!-- Evolução do Cérebro Virtual -->
+      <h3 style="font-size: 1.3rem; margin-bottom: 12px; color: var(--accent-purple);">🧠 1. Evolução do Cérebro Virtual & Jardim Digital</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 16px;">
+        Conforme o usuário conclui desafios diários, o cérebro virtual avança de nível visualmente:
+      </p>
+
+      <div class="evolution-track">
+        <div class="evolution-stage">
+          <div class="evolution-icon">🧠🌱</div>
+          <div class="evolution-name">Brain Baby</div>
+          <div class="evolution-desc">1 a 5 desafios feitos</div>
+        </div>
+        <div class="evolution-arrow">➔</div>
+        <div class="evolution-stage">
+          <div class="evolution-icon">🧠✨</div>
+          <div class="evolution-name">Brain Kid</div>
+          <div class="evolution-desc">6 a 20 desafios feitos</div>
+        </div>
+        <div class="evolution-arrow">➔</div>
+        <div class="evolution-stage">
+          <div class="evolution-icon">🧠⚡</div>
+          <div class="evolution-name">Brain Teen</div>
+          <div class="evolution-desc">21 a 50 desafios feitos</div>
+        </div>
+        <div class="evolution-arrow">➔</div>
+        <div class="evolution-stage">
+          <div class="evolution-icon">🧠👑</div>
+          <div class="evolution-name">Mega Brain</div>
+          <div class="evolution-desc">50+ desafios concluídos</div>
+        </div>
+      </div>
+
+      <!-- Streaks Sem Culpa -->
+      <div class="grid-2">
+        <div class="card card-accent-amber">
+          <div class="card-title">🔥 2. Sequência de Dias (Streaks Acolhedores)</div>
+          <p class="card-text">
+            Reconhecimento de consistência com reforço gradual:
+          </p>
+          <div style="background: #040813; padding: 14px; border-radius: 8px; margin: 12px 0; border: 1px solid rgba(245, 158, 11, 0.3);">
+            <strong style="color: var(--accent-amber);">🔥 "Você está há 6 dias cuidando dos seus hábitos!"</strong>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 4px;">Falta apenas 1 dia para completar sua primeira semana completa!</p>
+          </div>
+        </div>
+
+        <div class="card card-accent-emerald">
+          <div class="card-title">🌱 3. Filosofia Anti-Culpa (Gentle Fallback)</div>
+          <p class="card-text">
+            Regra inegociável de UX e de Backend para o público sênior:
+          </p>
+          <div style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid #EF4444; padding: 10px 14px; margin: 10px 0; font-size: 0.9rem; color: #FCA5A5;">
+            ❌ <strong>PROIBIDO:</strong> "Você perdeu sua sequência de dias."
+          </div>
+          <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 10px 14px; margin: 10px 0; font-size: 0.9rem; color: #86EFAC;">
+            ✅ <strong>PADRÃO:</strong> "🌱 Tudo bem! Hoje é uma nova oportunidade para continuar."
+          </div>
+        </div>
+      </div>
+
+      <!-- Sistema de Conquistas (Badges) -->
+      <h3 style="font-size: 1.3rem; margin: 28px 0 12px 0; color: var(--accent-cyan);">🏆 4. Sistema de Conquistas (Badges Oficiais)</h3>
+      <div class="achievements-grid">
+        <div class="achievement-item">
+          <div class="achievement-medal">🥉</div>
+          <div class="achievement-info">
+            <h4>Primeiros Passos</h4>
+            <p>Complete seus primeiros 5 desafios diários.</p>
+          </div>
+        </div>
+
+        <div class="achievement-item">
+          <div class="achievement-medal">🥈</div>
+          <div class="achievement-info">
+            <h4>Semana Ativa</h4>
+            <p>Conclua desafios ao longo de 7 dias na semana.</p>
+          </div>
+        </div>
+
+        <div class="achievement-item">
+          <div class="achievement-medal">🥇</div>
+          <div class="achievement-info">
+            <h4>Mente em Movimento</h4>
+            <p>Complete 30 atividades cognitivas no total.</p>
+          </div>
+        </div>
+
+        <div class="achievement-item">
+          <div class="achievement-medal">❤️</div>
+          <div class="achievement-info">
+            <h4>Amigo Presente</h4>
+            <p>Complete 10 desafios de socialização e ligação.</p>
+          </div>
+        </div>
+
+        <div class="achievement-item">
+          <div class="achievement-medal">🚶</div>
+          <div class="achievement-info">
+            <h4>Caminhante</h4>
+            <p>Complete 20 desafios de movimento e caminhada.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: Agentes & Harnesses (.agents/) -->
+    <!-- ========================================== -->
+    <div id="tab-agentes-harness" class="tab-content">
+      <h2 class="section-title">Estrutura Universal de Agentes e Harnesses</h2>
+      <p class="section-desc">
+        Organização padronizada do repositório em <code>.agents/</code>, <code>.agents/harnesses/</code> e <code>docs/</code> para execução com qualquer assistente de código.
+      </p>
+
+      <!-- Árvore de Diretórios -->
+      <div class="tree-container">
+        <div class="tree-title">📁 Estrutura de Diretórios Agnóstica do everMind</div>
+        <div class="tree-code">
+<span class="tree-folder">everMind/</span>
+├── <span class="tree-highlight">CONTEXT.md</span>                                 <span class="tree-comment"># Glossário canônico do domínio (sem detalhes de código)</span>
+├── <span class="tree-folder">.agents/</span>                                   <span class="tree-comment"># Personas e Harnesses Universais</span>
+│   ├── <span class="tree-file">README.md</span>                              <span class="tree-comment"># Política de delegação e escolha de personas</span>
+│   ├── <span class="tree-file">react-native-architect.md</span>              <span class="tree-comment"># Especialista em React Native, Expo & Deep Modules</span>
+│   ├── <span class="tree-file">cognitive-games-engineer.md</span>            <span class="tree-comment"># Mini-jogos: Memória, Sequência, Palavras, Música</span>
+│   ├── <span class="tree-file">gamification-rewards-engineer.md</span>       <span class="tree-comment"># Conquistas, Streaks sem culpa, Cérebro Baby->Mega</span>
+│   ├── <span class="tree-file">senior-ux-accessibility.md</span>             <span class="tree-comment"># Acessibilidade sênior (WCAG AAA, fontes grandes, copy)</span>
+│   ├── <span class="tree-file">content-curator.md</span>                     <span class="tree-comment"># Banco de hobbies & botão [SURPREENDER-ME]</span>
+│   │
+│   └── <span class="tree-folder">harnesses/</span>                             <span class="tree-comment"># Playbooks de execução agnósticos</span>
+│       ├── <span class="tree-file">default-session.md</span>                 <span class="tree-comment"># Onboarding de nova sessão</span>
+│       ├── <span class="tree-file">react-native-screen-impl.md</span>        <span class="tree-comment"># Criação de telas React Native com acessibilidade</span>
+│       ├── <span class="tree-file">cognitive-game-impl.md</span>             <span class="tree-comment"># Implementação de mini-jogos com TDD</span>
+│       ├── <span class="tree-file">gentle-gamification.md</span>             <span class="tree-comment"># Regras inegociáveis de streaks e anti-culpa</span>
+│       └── <span class="tree-file">accessibility-audit.md</span>             <span class="tree-comment"># Auditoria de contraste, áreas de toque e copy</span>
+│
+├── <span class="tree-folder">docs/</span>                                      <span class="tree-comment"># Verdade canônica do produto</span>
+│   ├── <span class="tree-highlight">START_HERE.md</span>                          <span class="tree-comment"># Visão geral de 1 tela do everMind</span>
+│   ├── <span class="tree-highlight">CURRENT_STATE.md</span>                       <span class="tree-comment"># Estado atual dos módulos implementados</span>
+│   ├── <span class="tree-highlight">DECISIONS.md</span>                           <span class="tree-comment"># ADRs (React Native, Offline-first, Anti-culpa)</span>
+│   ├── <span class="tree-file">BACKLOG.md</span>                             <span class="tree-comment"># Backlog priorizado de tarefas</span>
+│   └── <span class="tree-folder">features/</span>                              <span class="tree-comment"># Specs detalhadas por tela/funcionalidade</span>
+│       ├── <span class="tree-purple">screen-01-home.md</span>
+│       ├── <span class="tree-purple">screen-02-brain-gym.md</span>
+│       ├── <span class="tree-purple">screen-03-body-movement.md</span>
+│       ├── <span class="tree-purple">screen-04-selfcare.md</span>
+│       ├── <span class="tree-purple">screen-05-social-connection.md</span>
+│       ├── <span class="tree-purple">screen-06-surprise-discovery.md</span>
+│       ├── <span class="tree-purple">screen-07-weekly-summary.md</span>
+│       └── <span class="tree-purple">rewards-and-brain-evolution.md</span>
+│
+└── <span class="tree-folder">src/</span>                                       <span class="tree-comment"># Código-fonte React Native (TypeScript)</span>
+    ├── <span class="tree-rn">modules/</span>                               <span class="tree-comment"># Deep Modules (brain, gamification, habits)</span>
+    ├── <span class="tree-rn">screens/</span>                               <span class="tree-comment"># As 7 telas React Native</span>
+    ├── <span class="tree-rn">ui/</span>                                    <span class="tree-comment"># Componentes atômicos acessíveis</span>
+    └── <span class="tree-rn">storage/</span>                               <span class="tree-comment"># Adaptadores MMKV/AsyncStorage offline-first</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: Templates de Prompts -->
+    <!-- ========================================== -->
+    <div id="tab-prompts" class="tab-content">
+      <h2 class="section-title">Templates de Prompts Prontos para o Time</h2>
+      <p class="section-desc">
+        Prompts estruturados com quebras de linha e seções claras para colar diretamente no chat com qualquer IA.
+      </p>
+
+      <!-- PROMPT 1 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">1. Inicializando uma Nova Sessão de Desenvolvimento no everMind</span>
+          <button class="copy-btn" onclick="copyPrompt('p1', this)">Copiar Prompt</button>
+        </div>
+        <div class="prompt-body" id="p1">Estou iniciando uma nova sessão de desenvolvimento no aplicativo everMind (React Native + TypeScript).
+
+<span class="prompt-tag">[PASSO 1: ORDEM DE LEITURA OBRIGATÓRIA]</span>
+Leia os arquivos abaixo estritamente nesta ordem antes de propor ou alterar código:
+  1. CONTEXT.md
+  2. docs/START_HERE.md
+  3. docs/DECISIONS.md
+  4. docs/CURRENT_STATE.md
+  5. .agents/harnesses/default-session.md
+
+<span class="prompt-tag">[PASSO 2: CHECKLIST DA PRIMEIRA RESPOSTA]</span>
+Após a leitura, me responda antes de codificar:
+  • Qual é o estado atual das 7 telas e dos módulos React Native?
+  • Qual dos 4 pilares (Mente, Movimento, Autocuidado, Conexão) será afetado nesta tarefa?
+  • Qual persona em .agents/ você assumirá?
+  • Quais regras de acessibilidade sênior (WCAG AAA) e política anti-culpa se aplicam?
+
+<span class="prompt-tag">[RESTRIÇÃO]</span>
+Não altere código nem instale pacotes antes de receber minha confirmação de escopo.</div>
+      </div>
+
+      <!-- PROMPT 2 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">2. Criando Mini-Jogos de Ginástica Cerebral (Tela 2) em React Native</span>
+          <button class="copy-btn" onclick="copyPrompt('p2', this)">Copiar Prompt</button>
+        </div>
+        <div class="prompt-body" id="p2">Quero implementar um mini-jogo cognitivo na Tela 2 (BrainGymScreen): <span class="prompt-param">&lt;Ex: Sequência Numérica 2 -> 4 -> 6 -> ?&gt;</span>.
+
+<span class="prompt-tag">[PASSO 1: CONTEXTO E HARNESS]</span>
+  1. Leia CONTEXT.md, docs/DECISIONS.md e docs/features/screen-02-brain-gym.md.
+  2. Leia o harness .agents/harnesses/cognitive-game-impl.md.
+  3. Assuma o papel de .agents/cognitive-games-engineer.md.
+
+<span class="prompt-tag">[PASSO 2: REGRAS REACT NATIVE & ACESSIBILIDADE]</span>
+  • Componente limpo em src/modules/brain/ com interface tipada e seam isolado.
+  • Botões grandes (mínimo 48x48dp), fontes legíveis e suporte a haptics no acerto.
+  • Sem cronômetros estressantes ou telas de fracasso punitivas.
+  • Disparar evento de progresso para o Cérebro Virtual ao concluir.
+
+<span class="prompt-tag">[PASSO 3: ENTREGÁVEIS]</span>
+Apresente o estado do jogo (Zustand/hook), o componente React Native e o teste unitário (Jest/React Native Testing Library).</div>
+      </div>
+
+      <!-- PROMPT 3 -->
+      <div class="prompt-card">
+        <div class="prompt-header">
+          <span class="prompt-title">3. Implementando o Motor de Streaks Gentis e Badges</span>
+          <button class="copy-btn" onclick="copyPrompt('p3', this)">Copiar Prompt</button>
+        </div>
+        <div class="prompt-body" id="p3">Quero implementar o motor de Gamificação Acolhedora (Streaks Gentis + Cérebro Virtual).
+
+<span class="prompt-tag">[PASSO 1: CONTEXTO E HARNESS]</span>
+  1. Leia docs/DECISIONS.md e docs/features/rewards-and-brain-evolution.md.
+  2. Leia o harness .agents/harnesses/gentle-gamification.md.
+  3. Assuma o papel de .agents/gamification-rewards-engineer.md.
+
+<span class="prompt-tag">[PASSO 2: REGRAS INEGOCIÁVEIS]</span>
+  • 5 Badges: Primeiros Passos (5 des.), Semana Ativa (7 dias), Mente em Movimento (30 ativ.), Amigo Presente (10 conexões), Caminhante (20 mov.).
+  • Gentle Fallback: NUNCA usar 'Você perdeu sua sequência'. Use SEMPRE '🌱 Tudo bem! Hoje é uma nova oportunidade'.
+  • Cérebro Virtual: transições de nível Brain Baby (1-5) -> Brain Kid (6-20) -> Brain Teen (21-50) -> Mega Brain (50+).
+  • Persistência local Offline-First com MMKV/AsyncStorage.
+
+<span class="prompt-tag">[PASSO 3: SAÍDA]</span>
+Forneça a máquina de estados TypeScript em src/modules/gamification/, os adaptadores de storage e os testes de transição.</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      everMind Framework • React Native Mobile Architecture • Universal AI-Driven Harness Guide
+    </footer>
+  </div>
+
+  <script>
+    function switchTab(event, tabId) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(content => content.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function copyPrompt(elementId, btnElement) {
+      const text = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btnElement.innerText;
+        btnElement.innerText = 'Copiado! ✓';
+        btnElement.classList.add('copied');
+        setTimeout(() => {
+          btnElement.innerText = originalText;
+          btnElement.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
