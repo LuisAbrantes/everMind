@@ -20,14 +20,19 @@
       --accent-purple: #A855F7;
       --accent-amber: #F59E0B;
       --accent-rose: #F43F5E;
-      --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-geist: 'Geist', sans-serif;
       --font-geist-mono: 'Geist Mono', monospace;
     }
 
-    * {
+    /* Regra Absoluta: 100% dos elementos utilizam Geist */
+    *, *::before, *::after, html, body, button, input, textarea, select {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: var(--font-geist);
+    }
+    .font-mono, code, kbd, samp, pre {
+      font-family: var(--font-geist-mono) !important;
     }
 
     body {
@@ -802,7 +807,7 @@
         <div class="spec-grid">
           <div class="spec-item">
             <div class="spec-label">Fonte & Peso</div>
-            <div class="spec-val" id="spec-font">Inter (700 / 800)</div>
+            <div class="spec-val" id="spec-font">Geist (600 / 700 / 800) & Geist Mono</div>
           </div>
           <div class="spec-item">
             <div class="spec-label">Contraste WCAG</div>
@@ -1027,21 +1032,21 @@
         phone.className = 'phone-device theme-minimal';
         title.innerHTML = '<span>✨</span> Variante A: Warm Minimalist & High Contrast';
         desc.innerHTML = 'Foco total em <strong>legibilidade sênior extrema, conforto visual e navegação linear</strong>. Fundo escuro aveludado (#090E17), cartões bem contrastados, tipografia de 20sp e botões robustos de 54dp.';
-        font.innerText = 'Inter (700 / 800)';
+        font.innerText = 'Geist (700 / 800) & Geist Mono';
         tone.innerText = 'Sólido, Claro, Acolhedor';
         switcherLabel.innerText = 'Variante A (Warm Minimalist)';
       } else if (v === 'B') {
         phone.className = 'phone-device theme-playful';
         title.innerHTML = '<span>🌱</span> Variante B: Playful Garden & Brain Evolution';
         desc.innerHTML = 'Foco em <strong>gamificação viva e lúdica</strong>. Utiliza a metáfora de um jardim botânico digital onde cada desafio concluído faz o cérebro florescer com tons de esmeralda, menta e lilás brilhante.';
-        font.innerText = 'Plus Jakarta Sans (800)';
+        font.innerText = 'Geist (600 / 700) & Geist Mono';
         tone.innerText = 'Lúdico, Vibrante, Estimulante';
         switcherLabel.innerText = 'Variante B (Playful Garden)';
       } else if (v === 'C') {
         phone.className = 'phone-device theme-zen';
         title.innerHTML = '<span>🧘</span> Variante C: Nordic Zen & Gentle Rhythm';
         desc.innerHTML = 'Foco em <strong>paz mental, desaceleração e conforto</strong>. Formas orgânicas ultra-arredondadas (pílulas), paleta neutra e ritmo diário sereno sem pressa.';
-        font.innerText = 'Outfit (600 / 700)';
+        font.innerText = 'Geist (500 / 600) & Geist Mono';
         tone.innerText = 'Sereno, Zen, Desacelerado';
         switcherLabel.innerText = 'Variante C (Nordic Zen)';
       }

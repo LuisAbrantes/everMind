@@ -6,7 +6,7 @@
   <title>everMind — Aplicativo Interativo Completo (7 Telas & 4 Pilares)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-canvas: #000000;
@@ -20,15 +20,20 @@
       --primary-btn: #FAFAFA;
       --primary-text: #09090B;
       --secondary-btn: #27272A;
-      --font-geist: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-geist: 'Geist', sans-serif;
       --font-mono: 'Geist Mono', monospace;
     }
 
-    * {
+    /* Regra Absoluta: 100% dos elementos utilizam Geist */
+    *, *::before, *::after, html, body, button, input, textarea, select {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
+      font-family: var(--font-geist);
+    }
+    .font-mono, code, kbd, samp, pre {
+      font-family: var(--font-mono) !important;
     }
 
     body {

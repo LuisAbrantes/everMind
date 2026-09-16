@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>everMind — Longevidade Cognitiva, Bem-Estar Sênior & Gentle Rhythm</title>
+  
+  <!-- Tipografia Oficial Geist Sans & Geist Mono (100..900 Variable Font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS via CDN com Configuração Semântica do DESIGN.md -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'sans-serif'],
+            mono: ['Geist Mono', 'monospace'],
+          },
+          colors: {
+            canvas: {
+              deep: '#09090B',
+            },
+            surface: {
+              base: '#121215',
+              elevated: '#18181B',
+              subtle: '#27272A',
+            },
+            vital: {
+              emerald: '#10B981',
+              cyan: '#38BDF8',
+              amber: '#F59E0B',
+              purple: '#A855F7',
+            },
+          },
+          letterSpacing: {
+            tighter: '-0.035em',
+            tight: '-0.025em',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 19 & Babel Standalone para Execução Direta no Navegador -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* Regra Absoluta: 100% dos elementos utilizam Geist */
+    *, *::before, *::after, html, body, button, input, textarea, select {
+      font-family: 'Geist', sans-serif !important;
+    }
+    .font-mono, code, kbd, samp, pre {
+      font-family: 'Geist Mono', monospace !important;
+    }
+
+    body {
+      background-color: #09090B;
+      color: #FAFAFA;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Respeito Aprimorado a prefers-reduced-motion (WCAG AAA) */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        background-attachment: initial !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0ms !important;
+        transition-delay: 0ms !important;
+      }
+    }
+
+    /* Pulso e Respiração Suave Biofísica */
+    @keyframes gentleBreath {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .animate-gentle-breath {
+      animation: gentleBreath 4.5s ease-in-out infinite;
+    }
+
+    /* Superfícies de Navegador Refinadas (Craft Floor) */
+    ::selection {
+      background-color: rgba(16, 185, 129, 0.25);
+      color: #FAFAFA;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272A;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3F3F46;
+    }
+  </style>
+</head>
+<body class="selection:bg-emerald-500/30 selection:text-white">
+  <div id="root"></div>
+
+  <!-- Script da Aplicação React da Landing Page -->
+  <script type="text/babel">
+    const { useState } = React;
+
+    // Dados Canônicos dos Estágios do Cérebro Virtual (ADR-0003)
+    const BRAIN_STAGES = [
+      {
+        id: 'baby',
+        name: 'Brain Baby',
+        title: 'Boas-Vindas & Primeiros Passos',
+        description: 'Os primeiros rituais de mente e corpo consolidados com carinho e sem cobranças.',
+        avatar: '🌱🧠',
+        color: '#10B981',
+      },
+      {
+        id: 'kid',
+        name: 'Brain Kid',
+        title: 'Descoberta & Curiosidade',
+        description: 'A rotina da Tríade do Dia ativa e integrada ao bem-estar cotidiano.',
+        avatar: '✨🧠',
+        color: '#38BDF8',
+      },
+      {
+        id: 'teen',
+        name: 'Brain Teen',
+        title: 'Agilidade & Preservação',
+        description: 'Conexões neurais vivas com ginástica cerebral prazerosa e caminhadas regulares.',
+        avatar: '⚡🧠',
+        color: '#A855F7',
+      },
+      {
+        id: 'mega',
+        name: 'Mega Brain',
+        title: 'Maturidade & Longevidade Plena',
+        description: 'Estágio mestre: mente afiada, laços familiares fortes e autonomia corporal permanente.',
+        avatar: '👑🧠',
+        color: '#F59E0B',
+      },
+    ];
+
+    // Depoimentos Multigeracionais Canônicos
+    const TESTIMONIALS = [
+      {
+        id: '1',
+        author: 'Dra. Beatriz Albuquerque',
+        role: 'Médica Geriatra e Pesquisadora em Longevidade Cognitiva',
+        avatarText: 'BA',
+        quote: 'A eliminação de punições por streak é um marco na geriatria. O everMind gera constância real porque respeita o tempo biológico do idoso em vez de impor ansiedade.',
+      },
+      {
+        id: '2',
+        author: 'Helena Matos',
+        age: 72,
+        role: 'Professora Aposentada e Usuária Autônoma',
+        avatarText: 'HM',
+        quote: 'Pela primeira vez um aplicativo não parece um teste hospitalar. Os botões são fáceis de apertar, as letras são grandes e adoro telefonar para os meus netos.',
+      },
+      {
+        id: '3',
+        author: 'Rodrigo Silveira',
+        role: 'Filho e Cuidador Familiar',
+        avatarText: 'RS',
+        quote: 'Minha mãe de 76 anos agora faz sua caminhada de 10 minutos todos os dias e se diverte com as palavras. Ela se sente verdadeiramente independente.',
+      },
+    ];
+
+    function App() {
+      // Estados Interativos de Demonstração Lúdica
+      const [brainStageIndex, setBrainStageIndex] = useState(2); // Inicia no Teen
+      const [challengeCount, setChallengeCount] = useState(34);
+      const [justCelebrated, setJustCelebrated] = useState(false);
+      
+      // Mini-Puzzle do Pilar Mente
+      const [sequenceAnswer, setSequenceAnswer] = useState(null);
+      
+      // Hábitos de Movimento e Autocuidado
+      const [walkCompleted, setWalkCompleted] = useState(false);
+      const [waterCups, setWaterCups] = useState(3);
+      const [callDone, setCallDone] = useState(false);
+      
+      // Comparador Anti-Culpa
+      const [simulatedMissedDays, setSimulatedMissedDays] = useState(true);
+
+      const currentBrain = BRAIN_STAGES[brainStageIndex];
+
+      const handleAddChallenge = () => {
+        setChallengeCount(prev => {
+          const next = prev + 1;
+          if (next >= 51 && brainStageIndex < 3) {
+            setBrainStageIndex(3);
+            setJustCelebrated(true);
+            setTimeout(() => setJustCelebrated(false), 2500);
+          }
+          return next;
+        });
+      };
+
+      const openAppShowcase = () => {
+        window.location.href = 'evermind_app_showcase.html';
+      };
+
+      return (
+        <div className="min-h-screen bg-[#09090B] text-zinc-100">
+          
+          {/* ============================================================
+              1. HEADER SUSPENSO ("FLOATING ISLAND" ARCHITECTURE)
+              ============================================================ */}
+          <header className="fixed top-4 inset-x-0 z-50 px-4 mx-auto max-w-6xl pointer-events-none">
+            <div className="flex items-center justify-between pointer-events-auto bg-[#121215]/90 backdrop-blur-xl border border-white/10 rounded-full px-5 py-3 shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
+              
+              {/* Brand Logo com Nordic Zen & Geist */}
+              <a href="#hero" className="flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full bg-surface-elevated border border-white/10 flex items-center justify-center text-xl transition-transform group-hover:scale-105">
+                  🧠
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-sans font-bold text-lg tracking-tight text-white leading-none">
+                    ever<span className="text-vital-emerald">Mind</span>
+                  </span>
+                  <span className="font-mono text-[10px] text-zinc-400 uppercase tracking-widest leading-tight">
+                    Nordic Zen 60+
+                  </span>
+                </div>
+              </a>
+
+              {/* Links de Navegação (Desktop) */}
+              <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-300 font-medium">
+                <a href="#pilares" className="hover:text-white transition-colors">Os 4 Pilares</a>
+                <a href="#anti-culpa" className="hover:text-white transition-colors">Filosofia Sem Culpa</a>
+                <a href="#ergonomia" className="hover:text-white transition-colors">Ergonomia AAA</a>
+                <a href="#depoimentos" className="hover:text-white transition-colors">Depoimentos</a>
+              </nav>
+
+              {/* CTA Principal em Pílula Tátil com Button-in-Button */}
+              <button
+                type="button"
+                onClick={openAppShowcase}
+                className="group flex items-center gap-2 pl-4 pr-1.5 py-1.5 rounded-full bg-white text-zinc-950 font-bold text-sm hover:bg-zinc-100 active:scale-[0.98] transition-all shadow-[0_2px_14px_rgba(255,255,255,0.2)]"
+              >
+                <span>Experimentar</span>
+                <span className="w-7 h-7 rounded-full bg-zinc-950/10 flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+                  →
+                </span>
+              </button>
+
+            </div>
+          </header>
+
+          <main>
+            {/* ============================================================
+                2. HERO SECTION COM PROPOSTA DE VALOR & CÉREBRO VIRTUAL
+                ============================================================ */}
+            <section id="hero" className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
+              {/* Halos Orgânicos de Baixa Saturação (Zero AI Purple Slop) */}
+              <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-950/20 blur-[130px] pointer-events-none rounded-full" />
+              <div className="absolute top-1/3 right-8 w-[350px] h-[300px] bg-sky-950/20 blur-[110px] pointer-events-none rounded-full" />
+
+              <div className="max-w-6xl mx-auto px-6 relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+                  
+                  {/* Coluna Esquerda: Proposta de Valor & CTAs (7 Colunas) */}
+                  <div className="lg:col-span-7 flex flex-col items-start text-left">
+                    
+                    {/* 1º Eyebrow Tag da Página (Regra de Restrição: Máx 1 a cada 3 seções) */}
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-elevated border border-white/10 mb-6 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-vital-emerald animate-pulse" />
+                      <span className="text-xs font-mono font-medium tracking-wider uppercase text-zinc-300">
+                        Longevidade Cognitiva & Gentle Rhythm
+                      </span>
+                    </div>
+
+                    {/* Headline Display: Geist Sans com tracking -0.035em, máx. 2 linhas */}
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-sans font-bold tracking-tighter text-white leading-[1.12] mb-6">
+                      Sua mente ativa e serena.{' '}
+                      <span className="text-zinc-400 font-normal block sm:inline">
+                        No seu próprio ritmo.
+                      </span>
+                    </h1>
+
+                    {/* Subtexto Confortável Sênior: <= 20 palavras, acolhedor e direto */}
+                    <p className="text-lg sm:text-xl text-zinc-300 font-normal leading-relaxed max-w-[52ch] mb-8">
+                      {perspective === 'senior'
+                        ? 'O primeiro ecossistema diário de estimulação cognitiva com 4 pilares de vida, zero culpa e ergonomia sênior WCAG AAA.'
+                        : 'Proporcione aos seus pais autonomia mental, caminhadas tranquilas e afeto diário, sem pressão ou frustração.'}
+                    </p>
+
+                    {/* CTAs Táteis em Pílula (Button-in-Button Architecture) */}
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
+                      <button
+                        type="button"
+                        onClick={openAppShowcase}
+                        className="group flex items-center justify-between sm:justify-center gap-4 px-8 py-4 rounded-full bg-white text-zinc-950 font-bold text-base sm:text-lg hover:bg-zinc-100 active:scale-[0.98] transition-all shadow-[0_4px_24px_rgba(255,255,255,0.2)] min-h-[58px]"
+                      >
+                        <span>Começar Gratuitamente</span>
+                        <span className="w-8 h-8 rounded-full bg-zinc-950/10 flex items-center justify-center transition-transform group-hover:translate-x-1 font-bold">
+                          →
+                        </span>
+                      </button>
+
+                      <a
+                        href="#pilares"
+                        className="flex items-center justify-center gap-2 px-6 py-4 rounded-full bg-surface-elevated border border-white/10 text-zinc-200 font-medium text-base hover:border-white/20 hover:text-white active:scale-[0.98] transition-all min-h-[58px]"
+                      >
+                        <span>Conhecer os 4 Pilares</span>
+                      </a>
+                    </div>
+
+                    {/* Micro-Garantias de Baixa Fricção & Confiança Sênior */}
+                    <div className="pt-6 border-t border-white/10 w-full flex flex-wrap items-center gap-y-3 gap-x-6 text-xs text-zinc-400 font-mono">
+                      <div className="flex items-center gap-2">
+                        <span className="text-vital-emerald font-bold">✓</span>
+                        <span>Neurociência Sem Culpa</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-vital-cyan font-bold">✓</span>
+                        <span>100% Offline-First</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-vital-amber font-bold">✓</span>
+                        <span>Ergonomia WCAG AAA (≥ 18px)</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Coluna Direita: Preview Tátil do Cérebro Virtual em Double-Bezel (5 Colunas) */}
+                  <div className="lg:col-span-5">
+                    <div className="p-2 rounded-[2.5rem] bg-white/[0.04] border border-white/10 shadow-[0_12px_44px_rgba(0,0,0,0.6)]">
+                      <div className="bg-surface-base rounded-[2.1rem] p-7 border border-white/[0.06] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] relative overflow-hidden">
+                        
+                        {/* Header do Card */}
+                        <div className="flex items-center justify-between mb-5 pb-4 border-b border-white/[0.08]">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-vital-purple animate-pulse" />
+                            <span className="font-mono text-xs uppercase tracking-wider text-zinc-300 font-semibold">
+                              Cérebro Virtual Permanente
+                            </span>
+                          </div>
+                          <span className="font-mono text-[11px] text-zinc-400 bg-surface-elevated px-2.5 py-1 rounded-full border border-white/5">
+                            ADR-0003 Anti-Culpa
+                          </span>
+                        </div>
+
+                        {/* Avatar com Respiração Suave Biofísica */}
+                        <div className="flex flex-col items-center text-center my-3">
+                          <div className="relative mb-4">
+                            <div
+                              className="w-28 h-28 rounded-full flex items-center justify-center text-5xl bg-surface-elevated border-2 transition-all duration-500 shadow-md animate-gentle-breath"
+                              style={{ borderColor: currentBrain.color }}
+                            >
+                              <span className="select-none">{currentBrain.avatar}</span>
+                            </div>
+                            {justCelebrated && (
+                              <span className="absolute -top-2 -right-2 bg-vital-amber text-amber-950 font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-md transition-all duration-300 ease-out animate-pulse">
+                                EVOLUIU!
+                              </span>
+                            )}
+                          </div>
+
+                          <h3 className="font-sans text-2xl font-bold text-white mb-1">
+                            {currentBrain.name}
+                          </h3>
+                          <p className="font-mono text-xs text-zinc-400 mb-2">
+                            {currentBrain.title}
+                          </p>
+                          <p className="text-sm text-zinc-300 max-w-[34ch] leading-relaxed mb-5">
+                            {currentBrain.description}
+                          </p>
+
+                          {/* Contador Cumulativo em Geist Mono */}
+                          <div className="w-full bg-surface-elevated/90 border border-white/10 rounded-2xl p-4 mb-4">
+                            <div className="flex justify-between items-baseline mb-2">
+                              <span className="text-xs text-zinc-400 font-sans">
+                                Desafios Acumulados:
+                              </span>
+                              <span className="font-mono text-2xl font-bold text-white">
+                                {challengeCount}
+                              </span>
+                            </div>
+                            <div className="w-full h-2 rounded-full bg-zinc-800 overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${Math.min(100, (challengeCount / 60) * 100)}%`,
+                                  backgroundColor: currentBrain.color,
+                                }}
+                              />
+                            </div>
+                            <p className="text-[11px] text-zinc-400 text-left mt-2 italic font-sans">
+                              🌱 Regra de Ouro: O progresso nunca regride, mesmo em dias inativos.
+                            </p>
+                          </div>
+
+                          {/* Botão Interativo de Simulação */}
+                          <button
+                            type="button"
+                            onClick={handleAddChallenge}
+                            className="w-full py-3 px-4 rounded-full bg-zinc-800 hover:bg-zinc-700 active:scale-98 text-xs font-semibold text-zinc-100 border border-white/10 transition-all flex items-center justify-center gap-2"
+                          >
+                            <span>Completar Desafio Lúdico</span>
+                            <span className="font-mono text-vital-emerald font-bold">+1</span>
+                          </button>
+
+                          {/* Seletor Rápido de Estágios */}
+                          <div className="flex items-center justify-center gap-1.5 mt-4 w-full pt-3.5 border-t border-white/5">
+                            {BRAIN_STAGES.map((stg, i) => (
+                              <button
+                                key={stg.id}
+                                type="button"
+                                onClick={() => setBrainStageIndex(i)}
+                                className={`text-[10px] font-mono px-2 py-1 rounded-md transition-all ${
+                                  brainStageIndex === i
+                                    ? 'bg-zinc-700 text-white font-bold border border-white/20'
+                                    : 'text-zinc-500 hover:text-zinc-300'
+                                }`}
+                              >
+                                {stg.name.replace('Brain ', '')}
+                              </button>
+                            ))}
+                          </div>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            {/* ============================================================
+                3. BENTO GRID ASSIMÉTRICO DOS 4 PILARES (VARIANCE 7)
+                ============================================================ */}
+            <section id="pilares" className="py-24 lg:py-32 relative">
+              <div className="max-w-6xl mx-auto px-6">
+                
+                <div className="max-w-3xl mb-16">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-white mb-4">
+                    Quatro pilares integrados para uma longevidade serena.
+                  </h2>
+                  <p className="text-lg sm:text-xl text-zinc-300 leading-relaxed">
+                    A neurociência comprova que a mente não se preserva isolada. Cada dia traz uma
+                    combinação equilibrada de 3 desafios suaves para o cérebro, corpo e coração.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  
+                  {/* CARD 1: PILAR MENTE (8 Colunas) */}
+                  <div className="lg:col-span-8 p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 lg:p-10 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/10 text-vital-emerald border border-emerald-500/20">
+                            🌿 Pilar 01 · Neuroplasticidade
+                          </span>
+                          <span className="text-xs font-mono text-zinc-400">5 Micro-Jogos</span>
+                        </div>
+
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 tracking-tight">
+                          Ginástica Cerebral Lúdica & Sem Pressa
+                        </h3>
+                        <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-[55ch] mb-8">
+                          Exercícios rápidos de memória visual, sequências lógicas, vocabulário e
+                          música afetiva. Sem cronômetros regressivos punitivos: você joga no seu
+                          tempo e celebra a clareza.
+                        </p>
+                      </div>
+
+                      {/* Mini Puzzle Interativo */}
+                      <div className="bg-surface-elevated rounded-2xl p-5 border border-white/10">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                          <span className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
+                            Desafio Exemplo: Sequência Numérica
+                          </span>
+                          <span className="text-xs text-vital-emerald font-sans">
+                            Qual é o próximo número?
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="font-mono text-xl sm:text-2xl font-bold text-zinc-300 px-4 py-2 rounded-xl bg-zinc-800 border border-white/5">
+                            2
+                          </span>
+                          <span className="text-zinc-500 font-bold">→</span>
+                          <span className="font-mono text-xl sm:text-2xl font-bold text-zinc-300 px-4 py-2 rounded-xl bg-zinc-800 border border-white/5">
+                            4
+                          </span>
+                          <span className="text-zinc-500 font-bold">→</span>
+                          <span className="font-mono text-xl sm:text-2xl font-bold text-zinc-300 px-4 py-2 rounded-xl bg-zinc-800 border border-white/5">
+                            6
+                          </span>
+                          <span className="text-zinc-500 font-bold">→</span>
+                          <span className="font-mono text-xl sm:text-2xl font-bold text-vital-emerald px-4 py-2 rounded-xl bg-emerald-950/40 border border-vital-emerald/40 min-w-[56px] text-center">
+                            {sequenceAnswer !== null ? sequenceAnswer : '?'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          {[7, 8, 9].map((val) => (
+                            <button
+                              key={val}
+                              type="button"
+                              onClick={() => setSequenceAnswer(val)}
+                              className={`px-5 py-2.5 rounded-full font-mono text-sm font-semibold border transition-all active:scale-95 ${
+                                sequenceAnswer === val
+                                  ? val === 8
+                                    ? 'bg-emerald-400 text-emerald-950 font-bold border-emerald-300 shadow-sm'
+                                    : 'bg-zinc-800 text-zinc-300 border-zinc-600'
+                                  : 'bg-zinc-800/80 text-zinc-200 border-white/10 hover:border-white/20'
+                              }`}
+                            >
+                              {val}
+                            </button>
+                          ))}
+                          {sequenceAnswer === 8 && (
+                            <span className="text-xs text-vital-emerald font-semibold ml-2">
+                              ✨ Perfeito! Raciocínio ágil e saudável.
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 2: PILAR MOVIMENTO (4 Colunas) */}
+                  <div className="lg:col-span-4 p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 lg:p-10 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-sky-500/10 text-vital-cyan border border-sky-500/20">
+                            💧 Pilar 02 · Mobilidade
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                          Caminhada de 10 Minutos
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Mobilidade sem exigências atléticas intimidantes. Caminhadas leves na rua,
+                          no quintal ou na sala com retorno háptico suave.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-5 border border-white/10 text-center">
+                        <div className="text-4xl mb-3">🚶‍♂️</div>
+                        <div className="font-mono text-2xl font-bold text-white mb-1">
+                          10:00 min
+                        </div>
+                        <p className="text-xs text-zinc-400 mb-4">
+                          Meta suave e estimulante
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setWalkCompleted(!walkCompleted)}
+                          className={`w-full py-3 px-4 rounded-full text-xs font-semibold transition-all ${
+                            walkCompleted
+                              ? 'bg-vital-cyan text-zinc-950 font-bold'
+                              : 'bg-zinc-800 text-zinc-200 border border-white/10 hover:border-vital-cyan'
+                          }`}
+                        >
+                          {walkCompleted ? '✓ Caminhada Concluída!' : 'Simular Conclusão de Caminhada'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 3: PILAR AUTOCUIDADO (4 Colunas) */}
+                  <div className="lg:col-span-4 p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 lg:p-10 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/10 text-vital-amber border border-amber-500/20">
+                            🍯 Pilar 03 · Autocuidado
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">
+                          Água, Prato Colorido & Sono
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Check-ins de 1 toque para hidratação frequente, nutrição com vegetais
+                          e ritual para uma boa noite de repouso.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-5 border border-white/10">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-mono text-zinc-300">Hora da Água</span>
+                          <span className="font-mono text-xs text-vital-amber font-bold">
+                            {waterCups} copos hoje
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mb-3">
+                          {[1, 2, 3, 4, 5].map((idx) => (
+                            <div
+                              key={idx}
+                              className={`flex-1 h-3 rounded-full transition-all ${
+                                idx <= waterCups ? 'bg-vital-amber' : 'bg-zinc-800'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setWaterCups(prev => prev >= 5 ? 1 : prev + 1)}
+                          className="w-full py-2.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-white/10 transition-all"
+                        >
+                          + Beber um Copo d’Água
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CARD 4: PILAR CONEXÃO (8 Colunas) */}
+                  <div className="lg:col-span-8 p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 lg:p-10 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-purple-500/10 text-vital-purple border border-purple-500/20">
+                            🔮 Pilar 04 · Conexão & Afeto
+                          </span>
+                          <span className="text-xs font-mono text-zinc-400">Antídoto à Solidão</span>
+                        </div>
+
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 tracking-tight">
+                          Laços Vivos: "Como foi o seu dia?"
+                        </h3>
+                        <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-[55ch] mb-8">
+                          O afeto e a conversa ativa são os maiores protetores da cognição sênior.
+                          O everMind convida a telefonar para um amigo ou familiar sem protocolos
+                          frios, cultivando presença real e calor humano.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-5 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-purple-950/60 border border-vital-purple/40 flex items-center justify-center text-2xl">
+                            📞
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-white">
+                              Desafio de Hoje: Ligar para Alguém Especial
+                            </h4>
+                            <p className="text-xs text-zinc-400">
+                              Uma conversa carinhosa de 5 minutos renova o ânimo de quem liga e de quem atende.
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setCallDone(true)}
+                          className={`px-5 py-2.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
+                            callDone
+                              ? 'bg-vital-purple text-white'
+                              : 'bg-zinc-800 text-zinc-100 hover:bg-zinc-700 border border-white/10'
+                          }`}
+                        >
+                          {callDone ? '❤️ Ligação Realizada!' : 'Marcar como Concluído'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </section>
+
+            {/* ============================================================
+                4. FILOSOFIA ANTI-CULPA & GENTLE FALLBACK (ADR-0003)
+                ============================================================ */}
+            <section id="anti-culpa" className="py-24 lg:py-32 relative bg-zinc-950/60 border-y border-white/[0.06]">
+              <div className="max-w-6xl mx-auto px-6">
+                
+                {/* 2º Eyebrow da Página */}
+                <div className="max-w-3xl mb-16">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-elevated border border-white/10 mb-4">
+                    <span className="text-xs font-mono font-medium tracking-wider uppercase text-zinc-300">
+                      ADR-0003 · Psicologia Anti-Culpa
+                    </span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-white mb-4">
+                    Por que eliminamos o medo de perder dias?
+                  </h2>
+                  <p className="text-lg sm:text-xl text-zinc-300 leading-relaxed">
+                    Aplicativos comuns usam ansiedade e vergonha para forçar uso diário. No everMind,
+                    acreditamos que o bem-estar sênior nasce da acolhida, da constância afetuosa
+                    e do respeito ao ritmo de cada pessoa.
+                  </p>
+                </div>
+
+                {/* Simulador Interativo */}
+                <div className="mb-8 flex items-center justify-center">
+                  <div className="bg-surface-elevated border border-white/10 rounded-full p-1.5 flex items-center gap-2 text-xs font-mono shadow-md">
+                    <span className="text-zinc-400 pl-3">Simulação:</span>
+                    <button
+                      type="button"
+                      onClick={() => setSimulatedMissedDays(false)}
+                      className={`px-4 py-2 rounded-full transition-all ${
+                        !simulatedMissedDays
+                          ? 'bg-zinc-100 text-zinc-950 font-bold'
+                          : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      Dia Ativo Habitual
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSimulatedMissedDays(true)}
+                      className={`px-4 py-2 rounded-full transition-all ${
+                        simulatedMissedDays
+                          ? 'bg-vital-emerald text-zinc-950 font-bold'
+                          : 'text-zinc-400 hover:text-zinc-200'
+                      }`}
+                    >
+                      Ficou 2 Dias Sem Abrir o App
+                    </button>
+                  </div>
+                </div>
+
+                {/* Comparativo Visual Lado a Lado */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                  
+                  {/* Outros Apps: Ansiedade e Notificações Vermelhas */}
+                  <div className="p-1 rounded-[2.25rem] bg-red-950/20 border border-red-500/20 shadow-md flex flex-col">
+                    <div className="bg-surface-base rounded-[2rem] p-8 flex-1 flex flex-col justify-between border border-white/5">
+                      <div>
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-red-500/20">
+                          <span className="text-xs font-mono uppercase tracking-wider text-red-400 font-bold">
+                            ✕ Apps Tradicionais de Hábitos
+                          </span>
+                          <span className="text-xs font-mono text-zinc-500">Mecânica de Culpa</span>
+                        </div>
+
+                        <div className="bg-red-950/30 border border-red-500/30 rounded-2xl p-6 mb-6">
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="text-2xl">⚠️</span>
+                            <span className="font-sans font-bold text-red-300 text-lg">
+                              {simulatedMissedDays
+                                ? 'Você perdeu sua sequência de 12 dias!'
+                                : 'Mantenha o fogo aceso ou perca tudo!'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-zinc-400 leading-relaxed mb-4">
+                            {simulatedMissedDays
+                              ? 'Contador zerado para 0. Notificações vermelhas insistentes que geram sensação de fracasso e inadequação.'
+                              : 'Pressão constante para não quebrar a sequência diária a qualquer custo.'}
+                          </p>
+                          <div className="font-mono text-sm text-red-400 bg-red-950/60 px-3 py-1.5 rounded-lg inline-block">
+                            {simulatedMissedDays ? 'Streak: 0 dias (Zerado)' : 'Streak em Risco!'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-zinc-500 italic pt-4 border-t border-white/5">
+                        Resultado psicológico: Ansiedade, frustração e desinstalação em até 14 dias.
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* everMind: Acolhida e Crescimento Permanente */}
+                  <div className="p-1.5 rounded-[2.25rem] bg-emerald-950/20 border border-emerald-500/30 shadow-xl flex flex-col">
+                    <div className="bg-surface-base rounded-[2rem] p-8 flex-1 flex flex-col justify-between border border-white/[0.08]">
+                      <div>
+                        <div className="flex items-center justify-between mb-6 pb-4 border-b border-emerald-500/20">
+                          <span className="text-xs font-mono uppercase tracking-wider text-vital-emerald font-bold flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-vital-emerald" />
+                            everMind (Gentle Fallback)
+                          </span>
+                          <span className="text-xs font-mono text-vital-emerald font-semibold">
+                            Anti-Culpa Canônica
+                          </span>
+                        </div>
+
+                        <div className="bg-emerald-950/30 border border-emerald-500/40 rounded-2xl p-6 mb-6">
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="text-2xl">🌱</span>
+                            <span className="font-sans font-bold text-emerald-200 text-lg">
+                              {simulatedMissedDays
+                                ? 'Tudo bem! Cada dia tem seu próprio ritmo.'
+                                : 'Bom dia! O que gostaria de fazer hoje?'}
+                            </span>
+                          </div>
+                          <p className="text-sm text-zinc-200 leading-relaxed mb-4">
+                            {simulatedMissedDays
+                              ? 'Hoje é uma nova oportunidade para cuidar de você. Seu Cérebro Virtual permanece no estágio conquistado.'
+                              : 'Três sugestões leves preparadas com carinho para o seu momento.'}
+                          </p>
+                          <div className="font-mono text-sm text-vital-emerald bg-emerald-950/60 border border-emerald-500/30 px-3.5 py-1.5 rounded-lg inline-flex items-center gap-2">
+                            <span>Progresso Vitalício Preservado:</span>
+                            <strong className="text-white">34 Conquistas</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-zinc-300 italic pt-4 border-t border-white/5 flex items-center gap-2">
+                        <span className="text-vital-emerald">✓</span>
+                        <span>Resultado comprovado: Paz de espírito, apego emocional e constância sem estresse.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </section>
+
+            {/* ============================================================
+                5. ERGONOMIA SÊNIOR & ACESSIBILIDADE WCAG AAA (ADR-0005)
+                ============================================================ */}
+            <section id="ergonomia" className="py-24 lg:py-32 relative">
+              <div className="max-w-6xl mx-auto px-6">
+                
+                <div className="max-w-3xl mb-16">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-white mb-4">
+                    Ergonomia e acessibilidade de nível mundial (WCAG AAA).
+                  </h2>
+                  <p className="text-lg sm:text-xl text-zinc-300 leading-relaxed">
+                    Desenvolvido sob medida para a fisiologia e o conforto visual de pessoas 60+.
+                    Aqui, cada detalhe elimina o esforço e amplia a sensação de independência.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  
+                  {/* Card 1: Áreas de Toque Seguras */}
+                  <div className="p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="w-12 h-12 rounded-full bg-vital-emerald/10 border border-vital-emerald/30 flex items-center justify-center text-2xl mb-5">
+                          👆
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          Áreas de Toque Seguras (≥ 54px)
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Botões em pílula generosos que acomodam dedos com tremores, artrite ou
+                          menor precisão motora. Chega de toques acidentais ou frustração ao clicar.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-4 border border-white/10 text-center">
+                        <p className="text-xs text-zinc-400 mb-3 font-mono">
+                          Área de toque: 58px de altura real
+                        </p>
+                        <button
+                          type="button"
+                          className="w-full py-4 rounded-full font-bold text-base bg-white text-zinc-950 hover:bg-zinc-100 active:scale-[0.98] transition-all"
+                        >
+                          Área de Toque Ampla e Confortável
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Tipografia Sênior & Alto Contraste */}
+                  <div className="p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="w-12 h-12 rounded-full bg-vital-cyan/10 border border-vital-cyan/30 flex items-center justify-center text-2xl mb-5">
+                          👁️
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          Tipografia Sênior & Alto Contraste (17:1)
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Textos corridos nunca inferiores a 18px, espaçamento generoso entre
+                          linhas (1.6) e paleta aveludada que elimina o cansaço visual em telas brilhantes.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-5 border border-white/10">
+                        <div className="flex items-center justify-between text-xs font-mono text-zinc-400 mb-2">
+                          <span>Geist Sans Regular</span>
+                          <span className="text-vital-cyan font-bold">Razão 17.5:1</span>
+                        </div>
+                        <p className="text-lg text-white font-medium leading-relaxed">
+                          "Ler aqui é repousante. As letras não fogem dos meus olhos."
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Pressão Zero de Tempo */}
+                  <div className="p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="w-12 h-12 rounded-full bg-vital-amber/10 border border-vital-amber/30 flex items-center justify-center text-2xl mb-5">
+                          ⏳
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          Pressão Zero de Tempo (Tempo Livre)
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Nenhum jogo possui cronômetro regressivo que encerre com perda. A mente
+                          aprende e se regenera melhor quando não está sob estresse de segundos se esgotando.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-4 border border-white/10 flex items-center justify-between">
+                        <span className="text-xs text-zinc-300 font-sans">
+                          Cronômetros Punitivos:
+                        </span>
+                        <span className="font-mono text-xs text-vital-emerald font-bold bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full">
+                          0% Presentes
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card 4: 100% Offline-First */}
+                  <div className="p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg">
+                    <div className="bg-surface-base rounded-[2rem] p-8 border border-white/[0.06] h-full flex flex-col justify-between">
+                      <div>
+                        <div className="w-12 h-12 rounded-full bg-vital-purple/10 border border-vital-purple/30 flex items-center justify-center text-2xl mb-5">
+                          🛡️
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          100% Offline-First & Privacidade Local
+                        </h3>
+                        <p className="text-sm sm:text-base text-zinc-300 leading-relaxed mb-6">
+                          Funciona no sítio, na viagem ou em cômodos sem sinal de internet. Não
+                          consome franquia de dados móveis e mantém os dados de hábitos seguros no aparelho.
+                        </p>
+                      </div>
+
+                      <div className="bg-surface-elevated rounded-2xl p-4 border border-white/10 flex items-center justify-between">
+                        <span className="text-xs text-zinc-300 font-sans">
+                          Modo Avião / Sem Internet:
+                        </span>
+                        <span className="font-mono text-xs text-vital-cyan font-bold bg-sky-950/60 border border-sky-500/30 px-3 py-1 rounded-full">
+                          100% Disponível
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </section>
+
+            {/* ============================================================
+                6. DEPOIMENTOS MULTIGERACIONAIS
+                ============================================================ */}
+            <section id="depoimentos" className="py-24 lg:py-32 relative bg-zinc-950/40">
+              <div className="max-w-6xl mx-auto px-6">
+                
+                <div className="max-w-3xl mb-16">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold tracking-tight text-white mb-4">
+                    Aprovado por especialistas. Amado por famílias.
+                  </h2>
+                  <p className="text-lg sm:text-xl text-zinc-300 leading-relaxed">
+                    Veja como o respeito ao ritmo próprio transforma a relação de idosos e
+                    cuidadores com o cuidado diário da mente.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {TESTIMONIALS.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-1.5 rounded-[2.25rem] bg-white/[0.04] border border-white/10 shadow-lg flex flex-col"
+                    >
+                      <div className="bg-surface-base rounded-[2rem] p-8 flex-1 flex flex-col justify-between border border-white/[0.06]">
+                        <div>
+                          <div className="text-vital-emerald text-3xl font-sans font-bold mb-4 leading-none select-none">
+                            “
+                          </div>
+                          <p className="text-base sm:text-lg text-zinc-200 leading-relaxed mb-6 font-normal">
+                            {item.quote}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3 pt-6 border-t border-white/10">
+                          <div className="w-11 h-11 rounded-full bg-surface-elevated border border-white/15 flex items-center justify-center font-mono font-bold text-sm text-vital-cyan">
+                            {item.avatarText}
+                          </div>
+                          <div>
+                            <h4 className="font-sans font-semibold text-sm text-white">
+                              {item.author}
+                              {item.age ? `, ${item.age} anos` : ''}
+                            </h4>
+                            <p className="font-sans text-xs text-zinc-400">
+                              {item.role}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            </section>
+
+            {/* ============================================================
+                7. CONVERSÃO MAGNÉTICA FINAL (PERSUADE MODE)
+                ============================================================ */}
+            <section className="py-28 lg:py-36 relative overflow-hidden">
+              <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-emerald-950/20 to-transparent pointer-events-none" />
+
+              <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
+                <div className="p-2 rounded-[2.75rem] bg-white/[0.04] border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.7)]">
+                  <div className="bg-surface-base rounded-[2.25rem] p-10 sm:p-16 border border-white/[0.08] relative overflow-hidden">
+                    
+                    {/* 3º Eyebrow da Página (Total 3 em todo o site) */}
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-elevated border border-white/10 mb-6 shadow-sm">
+                      <span className="w-2 h-2 rounded-full bg-vital-emerald" />
+                      <span className="text-xs font-mono font-medium tracking-wider uppercase text-zinc-300">
+                        Comece Hoje no Seu Ritmo
+                      </span>
+                    </div>
+
+                    <h2 className="text-3xl sm:text-5xl lg:text-6xl font-sans font-bold tracking-tight text-white mb-6 leading-tight max-w-[20ch] mx-auto">
+                      Dê à sua mente o carinho e o ritmo que ela merece.
+                    </h2>
+
+                    <p className="text-lg sm:text-xl text-zinc-300 max-w-[50ch] mx-auto mb-10 leading-relaxed">
+                      {perspective === 'senior'
+                        ? 'Sem pressa, sem cronômetros de estresse e sem medo de esquecer um dia. Três hábitos prazerosos para viver com plenitude.'
+                        : 'Instale no celular dos seus pais em 2 minutos. Uma rotina afetuosa e digna que preserva a lucidez e aproxima sua família.'}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+                      <button
+                        type="button"
+                        onClick={openAppShowcase}
+                        className="group flex items-center justify-center gap-4 px-8 py-5 rounded-full bg-white text-zinc-950 font-bold text-lg hover:bg-zinc-100 active:scale-[0.98] transition-all shadow-[0_4px_30px_rgba(255,255,255,0.25)] min-h-[64px] w-full sm:w-auto"
+                      >
+                        <span>Acessar o everMind Gratuitamente</span>
+                        <span className="w-9 h-9 rounded-full bg-zinc-950/10 flex items-center justify-center transition-transform group-hover:translate-x-1 font-bold text-base">
+                          →
+                        </span>
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-center gap-y-2 gap-x-6 text-xs text-zinc-400 font-mono">
+                      <span>✓ Sem Anúncios Invasivos</span>
+                      <span>•</span>
+                      <span>✓ Sem Cartão de Crédito</span>
+                      <span>•</span>
+                      <span>✓ 100% Offline e Privado</span>
+                      <span>•</span>
+                      <span>✓ Fonte Sênior Ajustável</span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+
+          {/* ============================================================
+              8. RODAPÉ CANÔNICO & DIGNIDADE SÊNIOR
+              ============================================================ */}
+          <footer className="py-16 border-t border-white/10 bg-[#09090B] text-zinc-400 text-sm">
+            <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
+              
+              <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🧠</span>
+                  <span className="font-sans font-bold text-lg text-white">
+                    ever<span className="text-vital-emerald">Mind</span>
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-500 font-sans max-w-[40ch]">
+                  Estimulação cognitiva, bem-estar e longevidade ativa para o público 60+ com
+                  gamificação acolhedora e zero culpa.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-zinc-400">
+                <a href="#pilares" className="hover:text-white transition-colors">Os 4 Pilares</a>
+                <a href="#anti-culpa" className="hover:text-white transition-colors">ADR-0003 Anti-Culpa</a>
+                <a href="#ergonomia" className="hover:text-white transition-colors">ADR-0005 WCAG AAA</a>
+                <a href="#hero" className="hover:text-white transition-colors">ADR-0007 Nordic Zen</a>
+              </div>
+
+              <div className="text-xs text-zinc-600 font-mono text-center md:text-right">
+                <p>© 2026 everMind · Todos os direitos reservados.</p>
+                <p className="mt-1 text-zinc-500 font-sans">
+                  Desenhado com carinho, neurociência e respeito ao tempo humano.
+                </p>
+              </div>
+
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
