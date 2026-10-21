@@ -64,7 +64,11 @@
     children.push(actions);
 
     banner = h('aside', { class: 'install-hint', role: 'region', 'aria-label': 'Instalar o everMind' }, children);
-    global.document.body.appendChild(banner);
+    // Entra no FLUXO da tela, entre o conteúdo e a barra de abas: a área de
+    // rolagem encolhe e nada fica escondido nem sem poder ser tocado.
+    var tabbar = global.document.getElementById('tabbar');
+    if (tabbar && tabbar.parentNode) tabbar.parentNode.insertBefore(banner, tabbar);
+    else global.document.body.appendChild(banner);
   }
 
   global.addEventListener('beforeinstallprompt', function (event) {

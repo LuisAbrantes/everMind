@@ -274,7 +274,7 @@ Já ignora `/rest/v1/`. Acrescentar `/auth/v1/` e `/functions/v1/` à exceção 
 direto por serem de outra origem, mas deixar explícito evita regressão). Lembrar de subir o `CACHE_NAME`.
 
 ### 7.4 Testes a manter/atualizar
-- A suíte e2e (`cd web/tests && npm test`, 915 testes) tem um teste "app só carrega recursos do
+- A suíte e2e (`cd web/tests && npm test`, 921 testes) tem um teste "app só carrega recursos do
   próprio domínio" — ele deve continuar passando **sem** `config.js` configurado
   (sync desligada por padrão) e ser estendido para o caso com sync ligada (requisições só ao host do Supabase).
 - Adicionar e2e com a rede **mockada** (`page.route`) cobrindo: opt-in, fila offline → online,
@@ -336,7 +336,7 @@ curl -s -X POST "$URL/rest/v1/rpc/delete_my_account" -H "apikey: $KEY" -H "Autho
 ```
 
 ### 9.4 Critérios de aceitação
-1. Sem `config.js` ou sem opt-in: **zero** requisições ao Supabase; app idêntico ao atual; 915 testes e2e passando.
+1. Sem `config.js` ou sem opt-in: **zero** requisições ao Supabase; app idêntico ao atual; 921 testes e2e passando.
 2. Com opt-in e sem rede: tudo funciona; ao voltar a rede, sincroniza sem duplicar.
 3. Dois aparelhos com o mesmo e-mail convergem; nada regride; nada some.
 4. "Excluir minha conta" apaga tudo e o app volta ao estado inicial.
