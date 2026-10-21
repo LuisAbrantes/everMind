@@ -1,0 +1,476 @@
+/* ============================================================================
+   everMind Web — components.css
+   Portagem 1:1 de `src/ui/components/*` do projeto React Native:
+     AccessibleText → .text-*  (definido em utilities)
+     Button          → .btn
+     Card            → .card
+     Badge           → .badge
+     Avatar          → .avatar
+     Progress        → .progress
+
+   Este arquivo é carregado ANTES de utilities.css de propósito: assim as
+   classes de componente são a "base" e qualquer classe utilitária vinda do
+   `className` da tela a sobrescreve (mesma semântica do NativeWind).
+   ========================================================================== */
+
+/* ============================================================================
+   SHELL DO APP  (equivalente ao App.tsx + RootNavigator)
+   ========================================================================== */
+
+.app-root {
+  height: 100vh;
+  height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  background-color: var(--bg-app);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+  overflow: hidden;
+  /* Torna o app o container de referência das @container queries.
+     Isso é mais correto que @media aqui: o app tem max-width 640px, então em
+     um tablet a largura do CONTAINER é menor que a da JANELA. Adaptar à
+     janela faria o layout errar justamente no tablet. */
+  container-type: inline-size;
+  container-name: evermind;
+}
+
+.screen-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 24 }} */
+  padding: 24px 20px;
+  padding-top: calc(24px + var(--safe-top));
+}
+
+/* --- Barra inferior de navegação (WCAG AAA, alvo de toque >= 56px) ------- */
+.tabbar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 2px;
+  background-color: var(--bg-card);
+  border-top: 2px solid var(--border-subtle);
+  padding: 6px 4px;
+  padding-left: calc(4px + var(--safe-left));
+  padding-right: calc(4px + var(--safe-right));
+  padding-bottom: calc(6px + var(--safe-bottom));
+  min-height: calc(var(--tabbar-min-height) + var(--safe-bottom));
+}
+
+.tab {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tab-item-min-height);
+  padding: 4px 0;
+  border-radius: var(--radius-tile);
+  border: 2px solid transparent;
+  background-color: transparent;
+  color: var(--text-muted);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-icon {
+  font-size: 1.375rem;
+  line-height: 1.1;
+  display: block;
+}
+
+.tab-label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14px: mínimo do projeto */
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+/* Aba atual: borda + fundo + rótulo em destaque (não depende só de cor) */
+.tab[aria-current='page'] {
+  background-color: var(--fill-subtle);
+  border-color: var(--text-fg);
+}
+.tab[aria-current='page'] .tab-label { color: var(--text-fg); }
+
+/* O anel de foco fica DENTRO da aba: a barra encosta nas bordas da tela */
+.tab:focus-visible { outline-offset: -5px; }
+
+/* O <h1> recebe foco programático (tabindex=-1) ao trocar de tela: leitores de
+   tela o anunciam; o anel visual só aparece em elementos alcançáveis por Tab. */
+h1[tabindex='-1']:focus,
+h1[tabindex='-1']:focus-visible { outline: none; }
+
+/* Voltar (subtelas de "Mais") e item de menu "Mais" */
+.back-row { margin-bottom: 12px; }
+.back-btn { align-self: flex-start; }
+
+.more-list { display: flex; flex-direction: column; gap: 12px; }
+.more-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 16px;
+  text-align: left;
+  background-color: var(--bg-card);
+  color: var(--text-fg);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  font-family: var(--font-sans);
+}
+.more-item:active { background-color: var(--fill-subtle); }
+.more-item-icon { font-size: 1.75rem; line-height: 1; flex: none; }
+.more-item-text { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.more-item-title { font-size: 1.25rem; font-weight: 700; line-height: 1.25; }
+.more-item-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.35; }
+.more-item-chevron { font-size: 1.5rem; color: var(--text-muted); flex: none; }
+
+/* Pílula de estado offline: calma, sem vermelho, só ocupa espaço quando visível */
+.offline-pill {
+  flex: 0 0 auto;
+  align-self: center;
+  max-width: calc(100% - 24px);
+  margin: 8px 12px 0;
+  margin-top: calc(8px + var(--safe-top));
+  padding: 6px 16px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-surface);
+  color: var(--text-fg);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+.offline-pill[hidden] { display: none; }
+.offline-pill + .screen-scroll { padding-top: 16px; }
+
+/* ============================================================================
+   AccessibleText
+   A variante entra como classe base; o `className` da tela sobrescreve.
+   ========================================================================== */
+.text-body      { font-size: 1.125rem; color: var(--text-fg); font-family: var(--font-sans); line-height: 1.625; }
+.text-body-lead { font-size: 1.25rem; color: var(--text-fg); font-family: var(--font-sans); font-weight: 500; line-height: 1.625; }
+.text-title-lg  { font-size: 1.875rem; color: var(--text-fg); font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.025em; line-height: 1.25; }
+.text-title-md  { font-size: 1.5rem; color: var(--text-fg); font-family: var(--font-sans); font-weight: 700;  letter-spacing: -0.025em; line-height: 1.25; }
+.text-caption   { font-size: 1rem; color: var(--text-muted); font-family: var(--font-sans); line-height: 1.5; }
+.text-mono-stat { font-size: 1rem; color: var(--text-fg); font-family: var(--font-mono); font-weight: 700; letter-spacing: 0.05em; }
+
+/* ============================================================================
+   Button  (min-height 48/54/64px · border-radius full)
+   ========================================================================== */
+.btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: var(--radius-pill);
+  border-style: solid;
+  border-width: 1px;
+  padding: 8px 0;
+  background: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  line-height: 1.3;
+  transition: filter 0.12s ease, opacity 0.12s ease;
+}
+
+.btn:active:not(:disabled) { filter: brightness(0.92); }
+/* Desativado: cores sólidas (sem opacity) e borda tracejada; texto >= 7:1 */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background-color: var(--fill-subtle);
+  border-color: var(--border-subtle);
+  border-style: dashed;
+  border-width: 2px;
+  color: var(--text-muted);
+}
+
+/* --- Tamanhos --- */
+.btn-md  { min-height: 54px; padding-left: 24px; padding-right: 24px; }
+.btn-lg  { min-height: 64px; padding-left: 32px; padding-right: 32px; font-size: 1.25rem; font-weight: 700; }
+.btn-sm  { min-height: 48px; padding-left: 16px; padding-right: 16px; font-size: 1rem; font-weight: 600; }
+.btn-full { width: 100%; }
+
+/* --- Variantes --- */
+.btn-v-default {
+  background-color: var(--text-fg);
+  border-color: var(--text-fg);
+  color: var(--text-invert);
+}
+.btn-v-outline {
+  background-color: var(--bg-card);
+  border-width: 2px;
+  border-color: var(--border-subtle);
+  color: var(--text-fg);
+}
+.btn-v-secondary {
+  background-color: var(--fill-subtle);
+  border-color: var(--border-strong);
+  color: var(--text-fg);
+}
+.btn-v-ghost {
+  background-color: transparent;
+  border-width: 2px;
+  border-color: transparent;
+  color: var(--text-fg);
+}
+
+/* Spinner equivalente ao <ActivityIndicator> */
+.btn-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+   Card
+   ========================================================================== */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* StatsBanner: bloco principal ocupa a linha; a badge desce quando não cabe */
+.stats-main { flex: 1 1 14rem; min-width: 0; }
+
+/* Cabeçalho padrão das 6 telas com 🏠 INÍCIO */
+.page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Card de celebração (usado ao final de cada jogo e nos要因 concluídos) */
+.celebration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-tile);
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Citação de encerramento */
+.closing-quote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  margin-top: 8px;
+  text-align: center;
+}
+
+/* Painel neutro com borda (reutilizado em várias telas) */
+.panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-tile);
+  padding: 16px;
+}
+
+/* ============================================================================
+   Badge
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  padding: 4px 12px;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  /* Adição deliberada para mobile:
+     1. `min-width: 0` permite que a badge ENCOLHA como item flex em vez de
+        empurrar a linha inteira para fora da tela. Rótulos longos como
+        "+10 PONTOS / DESCOBERTA" ou "✓ RITUAL CONFIRMADO" quebrariam a
+        linha em telas de 320–390px se isso não existisse.
+     2. `white-space: normal` faz a quebra acontecer DENTRO da badge quando
+        necessário, em vez de causar estouro horizontal. Badges curtos
+        ("KID", "4 DIAS", "SAÚDE") continuam em uma única linha. */
+  min-width: 0;
+  white-space: normal;
+  max-width: 100%;
+  text-align: center;
+}
+
+.badge-v-default   { background-color: var(--text-fg);     border-color: var(--text-fg);     color: var(--text-invert); }
+.badge-v-secondary { background-color: var(--fill-subtle); border-color: var(--border-strong); color: var(--text-fg); }
+.badge-v-outline   { background-color: var(--bg-card);     border-color: var(--border-subtle); color: var(--text-fg); }
+.badge-v-success   { background-color: var(--bg-surface);  border-color: var(--border-strong); color: var(--text-fg); }
+
+/* ============================================================================
+   Avatar
+   ========================================================================== */
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  background-color: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.45);
+  line-height: 1;
+}
+
+.avatar-sm { width: 48px;  height: 48px;  font-size: 1.5rem; }
+.avatar-md { width: 64px;  height: 64px;  font-size: 30px; }
+.avatar-lg { width: 80px;  height: 80px;  font-size: 36px; }
+.avatar-xl { width: 112px; height: 112px; font-size: 48px; }
+
+/* ============================================================================
+   Progress
+   ========================================================================== */
+.progress {
+  position: relative;
+  width: 100%;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--text-fg);
+  border-radius: var(--radius-pill);
+  transition: width 0.35s ease;
+}
+
+/* ============================================================================
+   TILE — botão de resposta dos minijogos (equivalente ao <Pressable>)
+   ========================================================================== */
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48%;
+  min-height: 64px;
+  padding: 16px;
+  margin-bottom: 12px;
+  color: var(--text-fg);
+  font-family: var(--font-sans);
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--border-subtle);
+  background-color: var(--bg-card);
+  border-radius: var(--radius-tile);
+  text-align: center;
+  transition: background-color 0.12s ease;
+}
+
+.tile:active:not(:disabled) { background-color: var(--fill-subtle); }
+.tile:disabled { cursor: default; }
+
+/* Título/emoji do item (usado nos jogos de memória e atenção) */
+.tile-emoji { font-size: 36px; line-height: 1.1; margin-bottom: 4px; }
+.tile-emoji-lg { font-size: 48px; line-height: 1.1; margin-bottom: 4px; }
+
+/* ============================================================================
+   TOASTS — canal de feedback háptico/visual
+   O React Native usava MockFeedbackService (contadores inertes). Na web
+   aproveitamos a mesma seam para dar retorno tátil real e um aviso breve,
+   sem inventar telas ou fluxos novos.
+   ========================================================================== */
+.toast-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--tabbar-min-height) + var(--safe-bottom) + 16px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.toast {
+  max-width: 100%;
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-tile);
+  padding: 12px 16px;
+  color: var(--text-fg);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  animation: toast-in 0.25s ease-out;
+}
+
+.toast-fading { opacity: 0; transition: opacity 0.3s ease; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Convite de instalação (PWA) ---- */
+.install-hint {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(var(--tabbar-min-height) + var(--safe-bottom) + 12px);
+  z-index: 55;
+  max-width: 616px;
+  margin: 0 auto;
+  padding: 16px;
+  border: 2px solid var(--text-fg);
+  border-radius: 16px;
+  background: var(--bg-app);
+  color: var(--text-fg);
+}
+.install-hint-text { margin: 0 0 12px; font-size: 1rem; line-height: 1.4; }
+.install-hint-actions { display: flex; gap: 8px; }
+.install-hint-btn {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 2px solid currentColor;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.install-hint-primary { background: var(--text-fg); color: var(--bg-app); }

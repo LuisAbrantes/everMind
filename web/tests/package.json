@@ -1,0 +1,15 @@
+{
+  "name": "evermind-web-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated e2e + domain test suite for the everMind web PWA (Playwright, Chromium + WebKit).",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project='chromium-*'",
+    "test:webkit": "playwright test --project='webkit-*'",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

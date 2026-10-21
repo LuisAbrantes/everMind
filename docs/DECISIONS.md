@@ -210,3 +210,45 @@ Adotar o **Supabase** como plataforma de backend com suporte a **Expo React Nati
   - Integração nativa e rápida com Expo / React Native.
   - Segurança reforçada por RLS direto no Postgres.
   - Manutenção simples com migrations declarativas.
+
+---
+
+## ADR-0010: Interface Monocromática — Pilares Distinguidos por Ícone e Rótulo, Não por Cor
+
+- **Status:** Aprovado
+- **Data:** Outubro de 2026
+- **Decisores:** Product Lead (Luís) e Engenharia Front-end
+
+### Contexto
+A auditoria de acessibilidade da versão web sugeriu cores por pilar (Mente, Corpo, Cuidado, Afeto). Cores de matiz variado reduzem o contraste efetivo (AAA 7:1) sobre o fundo escuro, falham para daltonismo (comum entre seniores) e entram em conflito com o design system monocromático Geist (ADR-0006, ADR-0007).
+
+### Decisão
+Manter a interface **monocromática**. Não introduzir cores de pilar. Cada pilar é identificado por **emoji/ícone + rótulo textual** (☀️ Hoje, 🧠 Mente, 🚶 Corpo, 🌿 Cuidado, ❤️ Afeto, 🎲 Descobrir, 🌟 Semana); estado (atual, bloqueado, desativado) é indicado por borda, preenchimento e tracejado, nunca só por cor. Textos ≥ 7:1 e bordas de componentes ≥ 3:1.
+
+### Consequências
+- **Positivas:** contraste máximo, independência de cor (WCAG 1.4.1), identidade coesa, menos tokens a manter.
+- **Negativas:** menos "alegria" visual; compensada por emojis grandes, tipografia e espaçamento.
+
+---
+
+## ADR-0009: Semana Ativa = engajamento em pelo menos 5 dos últimos 7 dias; progresso honesto na versão web
+
+- **Status:** Aprovado
+- **Data:** Outubro de 2026
+- **Decisores:** Product Lead (Luís) e Engenharia Web
+
+### Contexto
+O CONTEXT.md define a conquista **Semana Ativa** como "engajamento distribuído ao longo dos 7 dias da semana". A portagem web exigia 7 sequências consecutivas (`consecutiveActiveDays >= 7`), o que é rígido demais para o público sênior e contradiz a Gamificação Acolhedora: um único dia de descanso impediria a conquista da semana. Além disso, a auditoria da versão web encontrou que o streak nunca era persistido, que o resumo semanal usava contadores vitalícios e valores de reserva fixos, que as datas misturavam UTC e horário local, e que várias recompensas podiam ser repetidas.
+
+### Decisão
+1. **Semana Ativa** é desbloqueada quando há atividade concluída em **pelo menos 5 dias distintos dentro de uma janela rolante de 7 dias** (hoje e os 6 dias anteriores). Não exige dias consecutivos nem 7 de 7.
+2. **Datas locais:** toda data `YYYY-MM-DD` do app é do fuso do aparelho. A convenção UTC foi abandonada.
+3. **Persistência honesta:** uma única função (`recordActivity`) registra QUALQUER atividade concluída — sequência (`currentStreak`, `totalActiveDays`, `lastActiveDate`), as últimas 60 datas ativas, um log de conclusões por pilar (60 dias) e as conquistas desbloqueadas (`unlockedAt`). O resumo semanal é calculado desse log, nunca de contadores vitalícios nem de valores de reserva.
+4. **Tríade por data:** o desafio só é concluído pela atividade real, é guardado por data, nunca é desfeito e nunca decrementa totais.
+5. **Recompensas idempotentes:** caminhada e ligação uma vez por dia; água conta como um desafio na meta diária; cada descoberta uma vez por dia.
+6. **Primeira execução em zeros:** sem perfil de demonstração. Dado armazenado ilegível é copiado para `<chave>_backup` e o usuário é avisado com delicadeza antes de recomeçar limpo.
+
+### Consequências
+- **Positivas:** a conquista premia constância sem punir um dia de descanso; números honestos; nenhuma recompensa duplicada; a virada do dia acontece na meia-noite local do usuário.
+- **Negativas / trade-offs:** diverge do app React Native original, que mantinha essas peculiaridades (documentado em `web/README.md` §5.6). Dados antigos de usuários da versão com perfil "Maria" são arquivados em `_backup` e substituídos por zeros.
+

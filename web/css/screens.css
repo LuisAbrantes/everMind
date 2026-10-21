@@ -1,0 +1,338 @@
+/* ============================================================================
+   everMind Web — screens.css
+   Ajustes de camada de apresentação por tela.
+
+   Princípio: reproduzir o layout do React Native 1:1, EXCETO onde a restrição
+   física da tela de um celular tornaria o layout original impossível de
+   renderizar. Nesses casos o desvio é mínimo, está comentado e não altera o
+   comportamento, o texto ou a hierarquia — apenas evita estouro de largura.
+   ========================================================================== */
+
+/* ============================================================================
+   HOME
+   ========================================================================== */
+
+/* Bloco de saudação: em telas muito estreitas a fonte reduz 1 passo para
+   que "☀️ Bom dia, Maria!" não quebre em 3 linhas. */
+.home-greeting { font-size: 1.875rem; }
+
+@media (max-width: 359px) {
+  .home-greeting { font-size: 1.625rem; }
+}
+@container evermind (max-width: 359px) {
+  .home-greeting { font-size: 1.625rem; }
+}
+
+/* Cartão de desafio: mantém o botão de ação com largura total */
+.challenge-btn { width: 100%; }
+
+/* ============================================================================
+   GINÁSTICA CEREBRAL
+   ========================================================================== */
+
+/* Menu de jogos */
+.game-menu-card { margin-bottom: 16px; }
+
+/* O cabeçalho pode ser apertado: título longo + botão lateral */
+.brain-gym-header { align-items: flex-start; }
+.brain-gym-header > .v:first-child { min-width: 0; flex: 1 1 auto; }
+.brain-gym-header .btn { flex: 0 0 auto; }
+
+/* ---- Faixa da sequência numérica -----------------------------------------
+   No RN: 4 caixas de 64px + mx-1.5 + space-x-3 = ~340px de largura fixa.
+   Numa tela de 320px de conteúdo isso estouraria. Aqui as caixas continuam
+   quadradas e com no máximo 64px, mas encurtam juntas para caber sempre. */
+.sequence-strip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.sequence-box {
+  flex: 0 1 64px;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: var(--radius-tile);
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+}
+
+.sequence-box-value {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(1.125rem, 6vw, 1.5rem);
+  color: var(--text-fg);
+  line-height: 1;
+}
+
+@media (max-width: 359px) {
+  .sequence-strip { gap: 6px; }
+}
+@container evermind (max-width: 359px) {
+  .sequence-strip { gap: 6px; }
+}
+
+/* ---- Grades de 2 colunas (memória, atenção, palavras) ---------------------- */
+.grid-2 {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: flex-start;
+  column-gap: 4%;
+}
+
+.grid-2 > * { width: 48%; }
+
+/* Opções empilhadas (jogo musical): largura total */
+.stack-options > * { width: 100%; margin-bottom: 8px; }
+.stack-options > *:last-child { margin-bottom: 0; }
+
+/* Fila de chips: rolagem horizontal sem barra (como o ScrollView do RN) */
+.chip-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  padding-bottom: 2px;
+}
+
+.chip {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  color: var(--text-fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.chip[aria-pressed='true'] {
+  background-color: var(--text-fg);
+  border-color: var(--text-fg);
+  color: var(--text-invert);
+}
+
+/* ============================================================================
+   MEXA O CORPO — cronômetro
+   ========================================================================== */
+.timer-value {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 48px;
+  color: var(--text-fg);
+  line-height: 1.1;
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+}
+
+.timer-actions .btn { flex: 1 1 0; min-width: 0; }
+
+/* ============================================================================
+   CUIDE DE VOCÊ — copos de água
+   ========================================================================== */
+.glass-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.glass {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-tile);
+  border: 2px solid var(--border-strong);
+  background-color: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: 1;
+  flex: none;
+}
+
+.glass[data-filled='true'] {
+  background-color: var(--fill-subtle);
+  border-color: var(--text-fg);
+}
+
+/* ============================================================================
+   DESAFIO DA CONEXÃO
+   ========================================================================== */
+.quote-block {
+  padding: 16px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-tile);
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ============================================================================
+   MINHA SEMANA
+   ========================================================================== */
+
+/* Cartões de pilar em linha: encolhe o texto para a badge nunca ser empurrada */
+.pillar-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+}
+
+.pillar-card > .v:first-child { min-width: 0; flex: 1 1 auto; }
+.pillar-card .badge { flex: 0 0 auto; }
+.pillar-emoji { font-size: 30px; line-height: 1.1; margin-right: 12px; flex: none; }
+
+/* Cartão de badge (conquistada / em progresso) */
+.badge-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: var(--radius-card);
+}
+
+.badge-card > .v:first-child { min-width: 0; flex: 1 1 auto; }
+.badge-card .badge { flex: 0 0 auto; }
+
+/* Chip de "N ATIVIDADES CONQUISTADAS" dentro do banner afirmativo.
+   Aqui a quebra de linha é permitida (o oposto de .badge) porque o texto
+   depende do total da semana e pode ficar longo. */
+.chip-stat {
+  display: inline-block;
+  align-self: flex-start;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-fg);
+  line-height: 1.4;
+  max-width: 100%;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+@media (max-width: 359px) {
+  .pillar-card,
+  .badge-card {
+    padding: 14px;
+    gap: 8px;
+  }
+  .pillar-emoji { font-size: 26px; margin-right: 8px; }
+}
+@container evermind (max-width: 359px) {
+  .pillar-card,
+  .badge-card {
+    padding: 14px;
+    gap: 8px;
+  }
+  .pillar-emoji { font-size: 26px; margin-right: 8px; }
+}
+
+/* Cabeçalho do cartão de jogo: o selo passa para baixo do título em vez de
+   sobrepô-lo em telas estreitas (320 px). */
+.game-card-header { flex-wrap: wrap; gap: 8px; }
+.game-card-title { flex: 1 1 60%; min-width: 0; }
+
+/* ============================================================================
+   Modos de contraste/cores do SO (carregado por último para vencer os componentes)
+   ========================================================================== */
+/* Modo de cores forçadas (Windows Alto Contraste): deixa o SO pintar */
+@media (forced-colors: active) {
+  .btn,
+  .tab,
+  .chip,
+  .tile,
+  .card,
+  .badge,
+  .panel,
+  .more-item {
+    border: 2px solid ButtonText;
+    forced-color-adjust: auto;
+  }
+  .tab[aria-current='page'],
+  .chip[aria-pressed='true'] {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: -4px;
+  }
+  .progress { border: 2px solid CanvasText; }
+  .progress-fill { background-color: Highlight; forced-color-adjust: none; }
+  :focus-visible { outline: 3px solid Highlight; }
+  .btn:disabled { border-style: dashed; color: GrayText; }
+}
+
+/* ============================================================================
+   Linhas "título (ícone + texto) + selo": com fontes >= 16px o selo não cabe ao
+   lado do título em 320 px e sobrepunha o texto. O grupo do título ganha uma
+   base de 11rem e a linha pode quebrar: o selo desce em vez de sobrepor.
+   (Vem DEPOIS de utilities.css .flex-1, por isso vence.)
+   ========================================================================== */
+.row.justify-between { flex-wrap: wrap; column-gap: 12px; row-gap: 8px; }
+.row.justify-between > .row.flex-1 { flex: 1 1 11rem; min-width: 0; }
+.row.justify-between > .row.flex-1 > .v { min-width: 0; }
+
+/* ============================================================================
+   Descoberta Surpresa — revelação calma (~1,2 s). Nunca bloqueia toques
+   (sem pointer-events) e é desligada com prefers-reduced-motion.
+   ========================================================================== */
+@keyframes em-discovery-reveal {
+  0%   { opacity: 0; transform: perspective(700px) rotateX(-16deg) translateY(8px); }
+  60%  { opacity: 0.6; }
+  100% { opacity: 1; transform: none; }
+}
+.discovery-reveal { animation: em-discovery-reveal 1.2s ease-out both; transform-origin: 50% 0; }
+@media (prefers-reduced-motion: reduce) {
+  .discovery-reveal { animation: none; }
+}
+
+/* Reconhecimento Musical — aviso de som */
+.music-sound-note { text-align: center; margin: 4px 0 12px; }

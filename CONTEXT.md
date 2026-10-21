@@ -75,7 +75,7 @@ O domínio organiza todas as atividades e metas de vida do indivíduo em quatro 
   1. **Brain Baby (Bebê):** Estágio inicial de boas-vindas (1 a 5 desafios concluídos).
   2. **Brain Kid (Criança):** Estágio de descoberta e primeiras rotinas (6 a 20 desafios concluídos).
   3. **Brain Teen (Jovem):** Estágio de consolidação e agilidade (21 a 50 desafios concluídos).
-  4. **Mega Brain (Mestre):** Estágio pleno de longevidade e maturidade cognitiva (50+ desafios concluídos).
+  4. **Mega Brain (Mestre):** Estágio pleno de longevidade e maturidade cognitiva (51+ desafios concluídos).
 - **Regra de Domínio:** O Cérebro Virtual **nunca involui ou perde níveis**. Uma vez alcançado um estágio, ele permanece como conquista definitiva do usuário.
 
 ### 4.2. Sequência Acolhedora (*Gentle Streak*)
@@ -90,7 +90,7 @@ O domínio organiza todas as atividades e metas de vida do indivíduo em quatro 
 ### 4.4. Emblemas de Conquista (*Honor Badges*)
 - **Definição:** Marcos de reconhecimento simbólico atribuídos ao atingir metas significativas:
   - **Primeiros Passos:** Conclusão dos 5 primeiros desafios globais.
-  - **Semana Ativa:** Engajamento distribuído ao longo dos 7 dias da semana.
+  - **Semana Ativa:** Engajamento distribuído ao longo dos 7 dias da semana (atividade em pelo menos 5 dos últimos 7 dias — ADR-0009).
   - **Mente em Movimento:** Conclusão de 30 atividades cognitivas no pilar Mente.
   - **Amigo Presente:** Conclusão de 10 desafios no pilar Conexão.
   - **Caminhante:** Conclusão de 20 sessões de movimento no pilar Movimento.

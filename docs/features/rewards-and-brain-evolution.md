@@ -14,7 +14,7 @@ O Cérebro Virtual evolui à medida que o usuário acumula desafios concluídos 
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
 │     🧠🌱        │       │     🧠✨        │       │     🧠⚡        │       │     🧠👑        │
 │   Brain Baby    │ ────▶ │    Brain Kid    │ ────▶ │   Brain Teen    │ ────▶ │   Mega Brain    │
-│  (1 a 5 feitos) │       │ (6 a 20 feitos) │       │ (21 a 50 feitos)│       │  (50+ feitos)   │
+│  (1 a 5 feitos) │       │ (6 a 20 feitos) │       │ (21 a 50 feitos)│       │  (51+ feitos)   │
 └─────────────────┘       └─────────────────┘       └─────────────────┘       └─────────────────┘
 ```
 
@@ -46,7 +46,7 @@ O cálculo de sequência valoriza a consistência sem criar medo ou punição:
 │    Mensagem: "Você começou uma linda jornada de bem-estar!"                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 🥈 SEMANA ATIVA                                                             │
-│    Gatilho: Concluir desafios ao longo de 7 dias na semana.                 │
+│    Gatilho: Atividade em pelo menos 5 dos últimos 7 dias (ADR-0009).                 │
 │    Mensagem: "Sua constância ao longo da semana é inspiradora!"             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 🥇 MENTE EM MOVIMENTO                                                       │

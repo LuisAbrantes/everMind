@@ -29,3 +29,8 @@ yarn-error.log*
 # Temporary files
 temp_*
 *.tmp
+
+# Test suite deps/artifacts
+web/tests/node_modules/
+web/tests/test-results/
+web/tests/playwright-report/

@@ -8,6 +8,14 @@
 [![Design System](https://img.shields.io/badge/Tema-Black%20%26%20White%20Monocromático-black?style=for-the-badge)](./tailwind.config.js)
 [![Tipografia](https://img.shields.io/badge/Tipografia-Geist%20Sans%20%26%20Mono-white?style=for-the-badge)](./tailwind.config.js)
 
+> ## 🌐 Versão PWA (mobile-first) — app principal para testes na web
+> O app agora também existe como **PWA em HTML/CSS/JS puros** em [`web/`](./web/README.md): sem build, abre no navegador (inclusive nos computadores da escola) e pode ser instalado na tela inicial do celular.
+> ```bash
+> python3 -m http.server 8080 --directory web   # abra http://localhost:8080
+> cd web/tests && npm install && npm test        # 528 testes e2e (Chromium + WebKit)
+> ```
+> Deploy: o workflow `.github/workflows/pages.yml` publica `web/` no GitHub Pages. A versão React Native abaixo permanece como referência.
+
 ---
 
 ## 🌟 Sobre o Projeto

@@ -1,0 +1,199 @@
+/* ============================================================================
+   everMind Web — tokens.css
+   Design System monocromático de alto contraste (padrão shadcn/ui / Zinc dark).
+   Portagem literal de `tailwind.config.js` do projeto React Native.
+   ========================================================================== */
+
+:root {
+  /* --- Cores ------------------------------------------------------------ */
+  --bg-app:        #09090B;  /* background  */
+  --bg-card:       #121215;  /* card       */
+  --bg-surface:    #1D1D21;  /* muted      */
+  --bg-locked:     #0E0E11;  /* cartão de badge bloqueado */
+
+  /* Preenchimentos (NÃO usar como borda: contraste baixo de propósito) */
+  --fill-subtle:   #27272A;  /* secondary / accent / aba ativa */
+  --fill-strong:   #3F3F46;  /* preenchimento de sucesso / filled tile */
+
+  /* Bordas: >= 3:1 contra app, card, surface e locked (WCAG 1.4.11) */
+  --border-subtle: #757580;  /* borda padrão de cards, tiles, chips */
+  --border-strong: #8F8F99;  /* borda de sucesso / destaque */
+  --border-soft:   #A1A1AA;  /* borda de item errado / caixa "?" */
+  --border-hairline: #757580; /* borda tracejada de item bloqueado/desativado */
+
+  --text-fg:       #FAFAFA;  /* foreground / primary (>= 17:1) */
+  --text-muted:    #B8B8C0;  /* muted-foreground (>= 8.5:1 em todos os fundos) */
+  --focus-ring:    #FFFFFF;
+  --text-invert:   #09090B;  /* texto sobre fundo claro */
+
+  --active-fill:   #E4E4E7;  /* active:bg do Button default */
+
+  /* --- Tipografia ------------------------------------------------------- */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* --- Raios ------------------------------------------------------------ */
+  --radius-tile: 16px;   /* rounded-2xl */
+  --radius-card: 24px;   /* rounded-3xl */
+  --radius-pill: 9999px; /* rounded-full */
+
+  /* --- Shell do app ----------------------------------------------------- */
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+
+  --tabbar-min-height: 72px;  /* min-h-[64px] do tab bar */
+  --tab-item-min-height: 56px;
+}
+
+/* ============================================================================
+   Reset enxuto. Mobile-first: o app é desenhado para retrato e ocupa 100dvh.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+html {
+  /* 100% = respeita a fonte configurada no SO/navegador (rem em todo o CSS) */
+  font-size: 100%;
+  /* impede zoom acidental por duplo toque sem bloquear pinch-zoom */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-fg);
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.5;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p, figure {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* O ScrollView do React Native usava showsVerticalScrollIndicator={false} */
+.screen-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.screen-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.chip-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.chip-row::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   Foco visível (WCAG 2.4.7 / 2.4.11): 3px sólido, 3px de afastamento
+   ------------------------------------------------------------------------- */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+/* O mesmo anel em preto interno garante contraste sobre fundos claros
+   (botão primário branco) sem depender de cor. */
+.btn-v-default:focus-visible,
+.chip[aria-pressed='true']:focus-visible,
+.badge-v-default:focus-visible {
+  box-shadow: 0 0 0 3px var(--bg-app);
+}
+
+/* Texto selecionável/alvo programático: o h1 recebe foco ao trocar de tela */
+h1:focus-visible,
+h2:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Visualmente oculto, porém lido por leitores de tela */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respeita a preferência de redução de movimento (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition: none !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mais contraste (preferência do SO): bordas e textos no máximo */
+@media (prefers-contrast: more) {
+  :root {
+    --border-subtle: #C4C4CC;
+    --border-strong: #E4E4E7;
+    --border-soft: #E4E4E7;
+    --border-hairline: #C4C4CC;
+    --text-muted: #E4E4E7;
+    --fill-strong: #52525B;
+  }
+}

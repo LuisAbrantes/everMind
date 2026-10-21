@@ -1,0 +1,171 @@
+/* ============================================================================
+   everMind Web — settings.css
+   Ajustes, boas-vindas (camada em tela cheia) e celebração de estágio.
+   Monocromático (ADR-0010), alvos >= 48px, fonte >= 14px, sem overflow a 320px.
+   ========================================================================== */
+
+/* ---- Ajustes ---- */
+.set-section { margin-top: 24px; min-width: 0; }
+.set-heading { margin-bottom: 12px; }
+.set-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  gap: 12px;
+  min-width: 0;
+}
+.set-save { align-self: flex-start; }
+.set-preview { overflow-wrap: anywhere; }
+
+.set-size-row { display: flex; gap: 8px; }
+.set-size {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 56px;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-tile);
+  background: var(--bg-surface);
+  color: var(--text-fg);
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.set-size.is-on {
+  background: var(--text-fg);
+  color: var(--text-invert);
+  border-color: var(--text-fg);
+}
+
+.set-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 14px;
+  text-align: left;
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-tile);
+  background: var(--bg-surface);
+  color: var(--text-fg);
+}
+.set-switch-text { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
+.set-switch-label { font-size: 1.125rem; font-weight: 700; }
+.set-switch-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.35; }
+.set-switch-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.set-switch-knob {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--text-fg); background: transparent;
+}
+.set-switch-state.is-on .set-switch-knob { background: var(--text-fg); }
+
+.set-confirm {
+  display: flex; flex-direction: column; gap: 12px;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-tile);
+  padding: 16px;
+  background: var(--bg-surface);
+}
+.set-confirm-title { font-size: 1.25rem; font-weight: 700; }
+.set-confirm-text { font-size: 1.0625rem; line-height: 1.5; color: var(--text-muted); }
+
+.set-footer {
+  margin: 28px 0 8px;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ---- Campos de texto (Ajustes + boas-vindas) ---- */
+.ob-label { display: block; font-size: 1.125rem; font-weight: 700; margin-bottom: 8px; }
+.ob-input {
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 1.25rem;
+  color: var(--text-fg);
+  background: var(--bg-app);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-tile);
+}
+.ob-input:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ---- Boas-vindas ---- */
+.onboarding {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--safe-top) + 16px) calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 16px) calc(var(--safe-left) + 16px);
+  background: var(--bg-app);
+  overflow-y: auto;
+}
+.ob-card {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+.ob-step { font-size: 1rem; color: var(--text-muted); }
+.ob-dots { display: flex; justify-content: center; gap: 10px; }
+.ob-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--text-fg); }
+.ob-dot-on { background: var(--text-fg); }
+.ob-emoji { font-size: 56px; line-height: 1.1; }
+.ob-title { font-size: 1.875rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.ob-title:focus-visible { outline: none; }
+.ob-line { font-size: 1.25rem; line-height: 1.5; }
+.ob-hint { font-size: 1rem; color: var(--text-muted); }
+.ob-card .ob-label, .ob-card .ob-input { text-align: left; }
+.ob-install { display: flex; flex-direction: column; gap: 12px; align-items: center; color: var(--text-muted); }
+.ob-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.ob-next { min-height: 60px; width: 100%; font-size: 1.25rem; }
+.ob-skip { width: 100%; }
+
+/* ---- Celebração de estágio ---- */
+.stage-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(9, 9, 11, 0.82);
+  animation: stage-fade 0.5s ease-out;
+}
+.stage-celebration-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--bg-card);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-card);
+}
+.stage-celebration-emoji { font-size: 64px; line-height: 1.1; }
+.stage-celebration-title { font-size: 1.75rem; font-weight: 800; line-height: 1.25; }
+.stage-celebration-text { font-size: 1.25rem; line-height: 1.5; }
+@keyframes stage-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .stage-celebration { animation: none; }
+}

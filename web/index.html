@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+  <title>everMind — Cuidado Diário para Mente e Corpo</title>
+  <meta name="description" content="Estimulação cognitiva, bem-estar e longevidade ativa no seu próprio ritmo. 4 pilares, 5 minijogos e 3 metas acolhedoras por dia.">
+  <meta name="theme-color" content="#09090B">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="everMind">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="preload" href="fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css">
+
+  <!-- Ordem intencional: components (base) → utilities (overrides) → screens.
+       Assim o `className` passado por cada tela vence a classe do componente,
+       exatamente como no NativeWind. -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  <link rel="stylesheet" href="css/screens.css">
+  <link rel="stylesheet" href="css/settings.css">
+  <!-- Tamanho do texto salvo em Ajustes: aplicado antes da 1ª pintura (sem "pisca"). -->
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('evermind:settings_text_size'));
+      if (s === 115 || s === 130) document.documentElement.style.fontSize = s + '%';
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- App shell: equivale ao SafeAreaView + View do App.tsx -->
+  <div id="app" class="v app-root">
+    <!-- SafeAreaView: equivale ao SafeAreaView do RootNavigator -->
+    <!-- Estado offline: calmo, sem vermelho; só ocupa espaço quando visível -->
+    <div id="offline-pill" class="offline-pill" hidden>Sem internet — tudo continua funcionando</div>
+    <main id="screen" class="v screen-scroll"></main>
+    <!-- Barra inferior acessível: equivale ao tab bar do RootNavigator -->
+    <nav id="tabbar" class="tabbar" aria-label="Navegação principal do everMind"></nav>
+  </div>
+
+  <!-- Avisos visuais (ocultos da árvore de acessibilidade; o anúncio vai para #sr-status) -->
+  <div id="toast-layer" class="toast-layer"></div>
+  <!-- Região de status educada (polite) para leitores de tela: toasts e troca de tela -->
+  <div id="sr-status" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============================================================
+       NÚCLEO (infraestrutura)
+       ============================================================ -->
+  <script src="js/core/dom.js"></script>
+  <script src="js/core/storage.js"></script>
+  <script src="js/core/store.js"></script>
+
+  <!-- ============================================================
+       DOMÍNIO (portagem 1:1 de src/modules)
+       ============================================================ -->
+  <script src="js/domain/types.js"></script>
+  <script src="js/domain/brain-evolution-engine.js"></script>
+  <script src="js/domain/gentle-streak-manager.js"></script>
+  <script src="js/domain/badge-evaluator.js"></script>
+  <script src="js/domain/daily-triad-coordinator.js"></script>
+  <script src="js/domain/habits-coordinator.js"></script>
+  <script src="js/domain/social-coordinator.js"></script>
+  <script src="js/domain/discovery-engine.js"></script>
+  <script src="js/domain/weekly-summary-calculator.js"></script>
+  <script src="js/domain/feedback-service.js"></script>
+  <script src="js/domain/supabase-client.js"></script>
+  <script src="js/domain/supabase-sync.js"></script>
+
+  <!-- ============================================================
+       MINIJOGOS COGNITIVOS (portagem 1:1 de src/modules/brain)
+       ============================================================ -->
+  <script src="js/games/memory-game-engine.js"></script>
+  <script src="js/games/sequence-game-engine.js"></script>
+  <script src="js/games/words-game-engine.js"></script>
+  <script src="js/games/attention-game-engine.js"></script>
+  <script src="js/games/music-game-engine.js"></script>
+
+  <!-- ============================================================
+       DESIGN SYSTEM (portagem 1:1 de src/ui/components)
+       ============================================================ -->
+  <script src="js/ui/components.js"></script>
+
+  <!-- ============================================================
+       TELAS (portagem 1:1 de src/screens)
+       ============================================================ -->
+  <script src="js/screens/home.js"></script>
+  <script src="js/screens/brain-gym.js"></script>
+  <script src="js/screens/body-movement.js"></script>
+  <script src="js/screens/self-care.js"></script>
+  <script src="js/screens/social-connection.js"></script>
+  <script src="js/screens/discovery.js"></script>
+  <script src="js/screens/weekly-summary.js"></script>
+  <script src="js/screens/more.js"></script>
+  <script src="js/screens/settings.js"></script>
+  <script src="js/screens/onboarding.js"></script>
+
+  <!-- ============================================================
+       BOOTSTRAP
+       ============================================================ -->
+  <script src="js/pwa.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
