@@ -10,6 +10,7 @@
 | :--- | :--- | :--- |
 | [`CONTEXT.md`](../CONTEXT.md) | Glossário e Linguagem Ubíqua pura do domínio. | Sempre que houver dúvida conceitual sobre termos e regras de negócio. |
 | [`docs/CURRENT_STATE.md`](./CURRENT_STATE.md) | Estado da implementação técnica e prontidão dos módulos. | No início de cada sessão de desenvolvimento. |
+| [`docs/SUPABASE_HANDOFF.md`](./SUPABASE_HANDOFF.md) | Modelo de banco por usuário, mapeamento do `localStorage`, protocolo de sync e passo a passo para conectar o Supabase. | Antes de conectar o Supabase ou mexer em `supabase/`. |
 | [`docs/DECISIONS.md`](./DECISIONS.md) | Registro Arquitetural de Decisões (ADRs). | Antes de alterar arquitetura, storage, UI ou regras de gamificação. |
 | [`docs/BACKLOG.md`](./BACKLOG.md) | Épicos e Histórias de Usuário priorizadas. | Para selecionar a próxima tarefa técnica a ser executada. |
 | [`docs/features/`](./features/) | Especificações detalhadas das 7 telas e subsistemas. | Ao implementar ou testar uma tela ou subsistema específico. |

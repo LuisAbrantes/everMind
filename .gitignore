@@ -34,3 +34,6 @@ temp_*
 web/tests/node_modules/
 web/tests/test-results/
 web/tests/playwright-report/
+
+# Testes SQL do Supabase
+supabase/tests/node_modules/

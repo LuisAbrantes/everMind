@@ -483,3 +483,11 @@ reproduzível. Resultado (verificação original, anterior à auditoria 2026-10)
    props como primeiro argumento e os filhos **variádicos**:
    `C.Card({ className: 'p-5' }, filho1, filho2)`. Passar filhos em
    `props.children` também funciona, mas o padrão no código é variádico.
+
+## 11. Persistência por usuário (Supabase) — a conectar
+
+O app ainda guarda tudo só no aparelho (`localStorage`). O banco por usuário já está
+**modelado e testado** (`supabase/migrations/`, `supabase/tests/`), e há um mapeador de
+referência em `js/domain/sync-mapper.js` (não carregado). O passo a passo para conectar,
+o mapeamento chave-a-chave e o protocolo de sincronização estão em
+[`docs/SUPABASE_HANDOFF.md`](../docs/SUPABASE_HANDOFF.md).

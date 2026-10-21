@@ -1,0 +1,8 @@
+{
+  "name": "evermind-supabase-sql-tests",
+  "private": true,
+  "type": "module",
+  "description": "Valida as migrations do Supabase num Postgres real (PGlite/WASM), sem Docker nem conta Supabase.",
+  "scripts": { "test": "node run-sql-tests.mjs" },
+  "dependencies": { "@electric-sql/pglite": "0.5.10" }
+}
