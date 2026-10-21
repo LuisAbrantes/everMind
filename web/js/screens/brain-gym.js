@@ -10,6 +10,9 @@
      components/WordsGameView.tsx
      components/AttentionGameView.tsx
      components/MusicGameView.tsx
+   e, desde outubro/2026, 4 jogos que NÃO existem no app original (variedade
+   cognitiva: memória de pares, cultura geral, cálculo e sequenciamento):
+     Pares · Complete o Ditado · Conta do Mercado · Ordem Certa
 
    REGRA DE DOMÍNIO (CONTEXT.md §5.3): sem temporizador regressivo, sem tela de
    "Game Over", tentativas ilimitadas. Errou? A opção é desativada suavemente e
@@ -30,16 +33,30 @@
   var wordsEngine = EM.games.words;
   var attentionEngine = EM.games.attention;
   var musicEngine = EM.games.music;
+  var pairsEngine = EM.games.pairs;
+  var proverbsEngine = EM.games.proverbs;
+  var marketEngine = EM.games.market;
+  var orderEngine = EM.games.order;
   var brainEngine = EM.domain.brainEvolutionEngine;
 
   var STORAGE_KEY_MIND_COUNT = 'evermind_mind_activities_count';
   var GROWTH_POINTS_PER_GAME = 10;
+
+  /** Jogos que `openGame` (Tríade, rotas) e o menu aceitam. */
+  var GAME_IDS = ['MEMORY', 'SEQUENCE', 'WORDS', 'ATTENTION', 'MUSIC', 'PAIRS', 'PROVERBS', 'MARKET', 'ORDER'];
+
+  /** Dica carinhosa genérica do Complete o Ditado (o certo nunca é revelado). */
+  var PROVERBS_HINT = 'Quase! Leia o ditado com calma, lembre como ele costuma ser dito e tente outra palavra.';
 
   /* ------------------------------------------------------------------------
      Estado local da tela — equivalente ao conjunto de useState do hook.
      Criado UMA vez (na primeira renderização) e mantido no closure.
      ---------------------------------------------------------------------- */
   var state = null;
+
+  function randomIndex(length) {
+    return Math.floor(Math.random() * length);
+  }
 
   function ensureState() {
     if (state) return state;
@@ -51,9 +68,15 @@
       completedGamesCount: app.storage.get(STORAGE_KEY_MIND_COUNT) || 0,
       memoryRound: memoryEngine.createRound(1),
       sequenceRound: sequenceEngine.createRound(0),
-      wordsRound: wordsEngine.createRound(0),
+      // Cada sessão começa num desafio diferente; as rodadas seguintes avançam
+      // pela rotação do próprio motor (nunca repetem o desafio anterior).
+      wordsRound: wordsEngine.createRound(randomIndex(wordsEngine.PRESET_WORD_CHALLENGES.length)),
       attentionRound: attentionEngine.createRound(0),
       musicRound: musicEngine.createRound(Math.floor(Math.random() * 8)),
+      pairsRound: pairsEngine.createRound(Date.now()),
+      proverbsRound: proverbsEngine.createRound(randomIndex(proverbsEngine.PROVERBS.length)),
+      marketRound: marketEngine.createRound(randomIndex(marketEngine.PROBLEMS.length)),
+      orderRound: orderEngine.createRound(randomIndex(orderEngine.ROUTINES.length)),
     };
 
     return state;
@@ -64,7 +87,8 @@
      log semanal, desafio da Tríade (se o jogo for o do dia) e conquistas:
      tudo numa única chamada a `EM.app.recordActivity` (ADR-0009).
 
-     `gameKey` = 'memory' | 'sequence' | 'words' | 'attention' | 'music'.
+     `gameKey` = 'memory' | 'sequence' | 'words' | 'attention' | 'music' |
+                 'pairs' | 'proverbs' | 'market' | 'order'.
      ---------------------------------------------------------------------- */
   function recordActivityCompletion(gameKey) {
     var app = EM.app;
@@ -146,9 +170,21 @@
     var previous = s.wordsRound;
     s.wordsRound = result.nextState;
 
-    if (result.isAccepted) EM.app.feedback.triggerSelectFeedback();
+    if (result.isAccepted) {
+      if (result.nextState !== previous) {
+        EM.app.feedback.triggerSelectFeedback();
+        EM.announce('Muito bem! ' + String(word).trim() + ' serve. ' + result.nextState.foundWords.length +
+          ' de ' + result.nextState.challenge.targetCount + '.');
+      }
+    } else if (result.isWrong) {
+      // Palavra que não serve: dica carinhosa, a opção fica desativada e a
+      // rodada segue (nada é descontado, o contador não muda).
+      EM.app.feedback.triggerGentleNoticeFeedback();
+      EM.announce(result.hint);
+    }
 
     if (result.nextState.isComplete && !previous.isComplete) {
+      EM.announce('Muito bem! Você completou as ' + result.nextState.challenge.targetCount + ' palavras.');
       recordActivityCompletion('words');
     }
 
@@ -157,7 +193,7 @@
 
   function handleWordsNextChallenge() {
     var s = ensureState();
-    s.wordsRound = wordsEngine.createRound(Math.floor(Math.random() * 3));
+    s.wordsRound = wordsEngine.createRound(wordsEngine.nextChallengeIndex(s.wordsRound.challengeIndex));
     EM.app.render();
   }
 
@@ -287,9 +323,176 @@
     EM.app.render();
   }
 
+  /* --- 6. Pares ---------------------------------------------------------- */
+  var pairsTimer = null;
+
+  function clearPairsTimer() {
+    if (pairsTimer) {
+      global.clearTimeout(pairsTimer);
+      pairsTimer = null;
+    }
+  }
+
+  /** Ao sair do jogo, uma pausa pendente é resolvida de uma vez (as cartas já viraram de volta). */
+  function settlePairs() {
+    clearPairsTimer();
+    if (state) state.pairsRound = pairsEngine.resolveMismatch(state.pairsRound);
+  }
+
+  /** Duas cartas diferentes à vista: vira de volta depois de uma pausa calma. */
+  function schedulePairsResolve() {
+    clearPairsTimer();
+    pairsTimer = global.setTimeout(function () {
+      pairsTimer = null;
+      var s = ensureState();
+      var next = pairsEngine.resolveMismatch(s.pairsRound);
+      if (next === s.pairsRound) return;
+      s.pairsRound = next;
+      if (EM.app.currentScreen === 'BRAIN_GYM' && s.activeGame === 'PAIRS') EM.app.render();
+    }, pairsEngine.MISMATCH_DELAY_MS);
+  }
+
+  function handlePairsFlip(cardId) {
+    var s = ensureState();
+    var previous = s.pairsRound;
+    var result = pairsEngine.flipCard(previous, cardId);
+    if (result.nextState === previous) return; // carta já aberta / par já feito: nada muda
+
+    s.pairsRound = result.nextState;
+    var card = result.nextState.cards[cardId];
+    var number = cardId + 1;
+    var found = result.nextState.matchedPairIds.length;
+
+    // Se a virada resolveu uma pausa pendente, o cronômetro antigo perdeu o sentido.
+    clearPairsTimer();
+    EM.app.feedback.triggerSelectFeedback();
+
+    if (result.outcome === 'first') {
+      EM.announce('Carta ' + number + ' virada: ' + card.name + '.');
+    } else if (result.outcome === 'match') {
+      EM.announce('Par encontrado: ' + card.name + '! ' + found + ' de ' + pairsEngine.PAIR_COUNT + ' pares.');
+    } else if (result.outcome === 'mismatch') {
+      EM.announce('Carta ' + number + ': ' + card.name + '. Essas duas não combinam. Elas vão virar de volta, sem pressa.');
+      schedulePairsResolve();
+    }
+
+    if (result.nextState.isComplete && !previous.isComplete) {
+      EM.announce('Parabéns! Você encontrou os ' + pairsEngine.PAIR_COUNT + ' pares.');
+      recordActivityCompletion('pairs');
+    }
+
+    EM.app.render();
+  }
+
+  function handlePairsNextRound() {
+    var s = ensureState();
+    clearPairsTimer();
+    s.pairsRound = pairsEngine.createRound(Date.now());
+    EM.app.render();
+  }
+
+  /* --- 7. Complete o Ditado ---------------------------------------------- */
+  function handleProverbsSubmit(option) {
+    var s = ensureState();
+    var previous = s.proverbsRound;
+    var result = proverbsEngine.submitAnswer(previous, option);
+    s.proverbsRound = result.nextState;
+    if (result.nextState === previous) return;
+
+    if (result.isCorrect) {
+      EM.announce('Muito bem! ' + proverbsEngine.fullText(previous.proverb) + ' ' + previous.proverb.meaning);
+      recordActivityCompletion('proverbs');
+    } else {
+      EM.app.feedback.triggerGentleNoticeFeedback();
+      EM.announce(PROVERBS_HINT);
+    }
+    EM.app.render();
+  }
+
+  function handleProverbsNext() {
+    var s = ensureState();
+    s.proverbsRound = proverbsEngine.createRound(proverbsEngine.nextProverbIndex(s.proverbsRound.proverbIndex));
+    EM.app.render();
+  }
+
+  /* --- 8. Conta do Mercado ----------------------------------------------- */
+  function handleMarketSubmit(cents) {
+    var s = ensureState();
+    var previous = s.marketRound;
+    var result = marketEngine.submitAnswer(previous, cents);
+    s.marketRound = result.nextState;
+    if (result.nextState === previous) return;
+
+    if (result.isCorrect) {
+      EM.announce('Muito bem! ' + marketEngine.explanationFor(previous.problem));
+      recordActivityCompletion('market');
+    } else {
+      EM.app.feedback.triggerGentleNoticeFeedback();
+      EM.announce(marketEngine.hintFor(previous.problem));
+    }
+    EM.app.render();
+  }
+
+  function handleMarketNext() {
+    var s = ensureState();
+    s.marketRound = marketEngine.createRound(marketEngine.nextProblemIndex(s.marketRound.problemIndex));
+    EM.app.render();
+  }
+
+  /* --- 9. Ordem Certa ---------------------------------------------------- */
+  function handleOrderPick(stepId) {
+    var s = ensureState();
+    var previous = s.orderRound;
+    var result = orderEngine.pickStep(previous, stepId);
+    if (result.nextState === previous) return;
+    s.orderRound = result.nextState;
+
+    var step = previous.steps.filter(function (item) { return item.id === stepId; })[0];
+    var position = result.nextState.pickedIds.length;
+
+    if (result.outcome === 'wrong') {
+      EM.app.feedback.triggerGentleNoticeFeedback();
+      EM.announce('Passo ' + position + ': ' + step.text + '. Quase! Vamos tentar de novo. Use Desfazer ou Recomeçar.');
+    } else if (result.outcome === 'complete') {
+      EM.announce('Passo ' + position + ': ' + step.text + '. Ordem perfeita! Você organizou todos os passos.');
+      recordActivityCompletion('order');
+    } else {
+      EM.app.feedback.triggerSelectFeedback();
+      EM.announce('Passo ' + position + ': ' + step.text + '.');
+    }
+    EM.app.render();
+  }
+
+  function handleOrderUndo() {
+    var s = ensureState();
+    var next = orderEngine.undoLastPick(s.orderRound);
+    if (next === s.orderRound) return;
+    s.orderRound = next;
+    EM.app.feedback.triggerSelectFeedback();
+    EM.announce('Último passo desfeito. ' + next.pickedIds.length + ' de ' + orderEngine.STEP_COUNT + ' passos escolhidos.');
+    EM.app.render();
+  }
+
+  function handleOrderRestart() {
+    var s = ensureState();
+    var next = orderEngine.restart(s.orderRound);
+    if (next === s.orderRound) return;
+    s.orderRound = next;
+    EM.app.feedback.triggerSelectFeedback();
+    EM.announce('Recomeçando. Escolha o primeiro passo.');
+    EM.app.render();
+  }
+
+  function handleOrderNext() {
+    var s = ensureState();
+    s.orderRound = orderEngine.createRound(orderEngine.nextRoutineIndex(s.orderRound.routineIndex));
+    EM.app.render();
+  }
+
   function handleSetActiveGame(gameId) {
     var s = ensureState();
     stopMusicAudio();
+    settlePairs();
     s.activeGame = gameId;
     EM.app.render();
   }
@@ -302,20 +505,31 @@
    */
   function openGame(gameId) {
     var s = ensureState();
-    if (['MEMORY', 'SEQUENCE', 'WORDS', 'ATTENTION', 'MUSIC'].indexOf(gameId) < 0) return;
+    if (GAME_IDS.indexOf(gameId) < 0) return;
     if (gameId === 'MEMORY' && s.memoryRound.isRoundComplete) s.memoryRound = memoryEngine.createRound(Date.now());
     if (gameId === 'SEQUENCE' && s.sequenceRound.isSolved) {
       s.sequenceRound = sequenceEngine.createRound(Math.floor(Math.random() * 5));
     }
     if (gameId === 'WORDS' && s.wordsRound.isComplete) {
-      s.wordsRound = wordsEngine.createRound(Math.floor(Math.random() * 3));
+      s.wordsRound = wordsEngine.createRound(wordsEngine.nextChallengeIndex(s.wordsRound.challengeIndex));
     }
     if (gameId === 'ATTENTION' && s.attentionRound.isSolved) {
       s.attentionRound = attentionEngine.createRound(Math.floor(Math.random() * 3));
     }
     stopMusicAudio();
+    settlePairs();
     if (gameId === 'MUSIC' && s.musicRound.isSolved) {
       s.musicRound = musicEngine.createRound(musicEngine.nextTrackIndex(s.musicRound.trackIndex));
+    }
+    if (gameId === 'PAIRS' && s.pairsRound.isComplete) s.pairsRound = pairsEngine.createRound(Date.now());
+    if (gameId === 'PROVERBS' && s.proverbsRound.isSolved) {
+      s.proverbsRound = proverbsEngine.createRound(proverbsEngine.nextProverbIndex(s.proverbsRound.proverbIndex));
+    }
+    if (gameId === 'MARKET' && s.marketRound.isSolved) {
+      s.marketRound = marketEngine.createRound(marketEngine.nextProblemIndex(s.marketRound.problemIndex));
+    }
+    if (gameId === 'ORDER' && s.orderRound.isComplete) {
+      s.orderRound = orderEngine.createRound(orderEngine.nextRoutineIndex(s.orderRound.routineIndex));
     }
     s.activeGame = gameId;
   }
@@ -324,7 +538,7 @@
      COMPONENTES DE JOGO
      ======================================================================= */
 
-  /** Cabeçalho comum dos 5 cartões de jogo. */
+  /** Cabeçalho comum dos cartões de jogo. */
   function gameCardHeader(emoji, title, badgeLabel) {
     return row(
       { class: 'items-center justify-between mb-4 game-card-header' },
@@ -334,6 +548,38 @@
         C.Text({ variant: 'title-md', className: 't-fg' }, title)
       ),
       C.Badge({ variant: 'outline', label: badgeLabel })
+    );
+  }
+
+  /** Dica carinhosa (neutra, sem cor de alerta): usada ao tocar numa opção que não serve. */
+  function softHint(message, title) {
+    return view(
+      { class: 'p-4 b-surface border br-strong rounded-2xl mb-4 soft-hint' },
+      C.Text(
+        { variant: 'caption', className: 'font-mono t-xs t-fg uppercase mb-1' },
+        title || '💡 DICA CARINHOSA:'
+      ),
+      C.Text({ variant: 'body', className: 't-sm t-muted' }, message)
+    );
+  }
+
+  /** Opção de múltipla escolha (Ditado e Mercado): uma por linha, alvo >= 64 px.
+      Desativar não usa `disabled` nativo: o foco do teclado se mantém. */
+  function choiceTile(opts) {
+    var isSoftDisabled = opts.isWrong || opts.isSolved;
+    var style = 'b-surface br-subtle';
+    if (opts.isCorrectPicked) style = 'b-subtle br-fg';
+    if (opts.isWrong) style = 'b-card br-hairline op-40';
+    return h(
+      'button',
+      {
+        type: 'button',
+        class: EM.dom.cls(['tile', 'min-h-64', 'p-4', style]),
+        'aria-disabled': isSoftDisabled ? 'true' : null,
+        'data-focus-key': opts.focusKey,
+        onClick: opts.onPress,
+      },
+      C.Text({ variant: 'body', className: opts.textClass }, opts.label)
     );
   }
 
@@ -537,23 +783,34 @@
   }
 
   /* ---- 3. WordsGameView.tsx -------------------------------------------- */
+  /* Controle desativado SEM `disabled` nativo: continua focável (o foco do
+     teclado/leitor de tela não se perde quando a opção "apaga") e o toque é
+     ignorado pelo CSS (`.tile[aria-disabled='true']`) e pelo motor. O visual
+     (cor sólida + borda tracejada) vem das classes `op-*`. */
   function renderWordsGame() {
     var s = ensureState();
     var round = s.wordsRound;
     var challenge = round.challenge;
     var foundWords = round.foundWords;
+    var wrongWords = round.wrongWords || [];
 
     var optionTiles = round.optionsPool.map(function (word) {
       var isChosen = foundWords.indexOf(word) >= 0;
-      var btnBg = isChosen ? 'b-subtle br-fg op-50' : 'b-surface br-subtle';
+      var isWrong = wrongWords.indexOf(word) >= 0;
+      var isSoftDisabled = isChosen || isWrong || round.isComplete;
+
+      // Acertada: preenchida e com borda branca sólida. Descartada: tracejada e apagada.
+      var btnBg = 'b-surface br-subtle';
+      if (isChosen) btnBg = 'b-subtle br-fg';
+      if (isWrong) btnBg = 'b-card br-hairline op-40';
 
       return h(
         'button',
         {
           type: 'button',
           class: EM.dom.cls(['tile', 'min-h-54', btnBg]),
-          disabled: isChosen || round.isComplete,
-          'aria-label': 'Palavra ' + word,
+          'aria-disabled': isSoftDisabled ? 'true' : null,
+          'data-focus-key': 'word-' + word,
           onClick: function () {
             handleWordsSelect(word);
           },
@@ -570,10 +827,13 @@
         { class: 'p-4 b-surface border br-subtle rounded-2xl mb-4' },
         C.Text(
           { variant: 'caption', className: 'font-mono t-xs t-muted uppercase mb-1' },
-          'TEMA DO DESAFIO:'
+          'O QUE FAZER:'
         ),
-        C.Text({ variant: 'body-lead', className: 'fw-bold t-fg mb-1' }, challenge.theme),
-        C.Text({ variant: 'body', className: 't-sm t-muted' }, challenge.themeDescription)
+        C.Text({ variant: 'body-lead', className: 'fw-bold t-fg mb-1' }, challenge.instruction + '.'),
+        C.Text(
+          { variant: 'body', className: 't-sm t-muted' },
+          challenge.themeDescription + ' Algumas palavras não servem: se tocar em uma, é só tentar outra.'
+        )
       ),
 
       row(
@@ -601,19 +861,26 @@
 
       C.Text(
         { variant: 'caption', className: 'mb-2 t-center' },
-        'Toque nas palavras para adicionar:'
+        'Toque nas palavras que servem:'
       ),
-      view({ class: 'grid-2 mb-4' }, optionTiles),
+      view({ class: 'words-grid mb-4' }, optionTiles),
+
+      /* Dica carinhosa — composta a partir da última palavra que não serve */
+      round.lastWrongWord && !round.isComplete
+        ? softHint(wordsEngine.hintFor(challenge, round.lastWrongWord))
+        : null,
 
       round.isComplete
         ? view(
             { class: 'mt-2' },
             C.Celebration(
               '🎉 Vocabulário Brilhante!',
-              'Você completou as ' +
+              'Você encontrou as ' +
                 challenge.targetCount +
                 ' palavras com a letra ' +
                 challenge.letter +
+                ': ' +
+                foundWords.join(', ') +
                 '.'
             ),
             C.Button({
@@ -795,6 +1062,321 @@
   }
 
   /* =========================================================================
+     JOGOS NOVOS (não existem no app original)
+     ======================================================================= */
+
+  /* ---- 6. Pares --------------------------------------------------------- */
+  function pairsCardLabel(round, card) {
+    var number = card.id + 1;
+    var status = pairsEngine.cardStatus(round, card.id);
+    if (status === 'hidden') return 'Carta ' + number + ': escondida';
+    if (status === 'up') return 'Carta ' + number + ': virada, ' + card.emoji;
+    return 'Carta ' + number + ': par encontrado, ' + card.emoji;
+  }
+
+  function renderPairsGame() {
+    var s = ensureState();
+    var round = s.pairsRound;
+    var found = round.matchedPairIds.length;
+
+    var cardNodes = round.cards.map(function (card) {
+      var status = pairsEngine.cardStatus(round, card.id);
+      var style = 'b-card br-subtle';
+      if (status === 'up') style = 'b-surface br-fg';
+      if (status === 'matched') style = 'b-subtle br-strong';
+      // Só a carta recém-virada anima (e só sem prefers-reduced-motion).
+      var isFresh = status !== 'hidden' && round.lastFlippedId === card.id;
+
+      return h(
+        'button',
+        {
+          type: 'button',
+          class: EM.dom.cls(['tile', 'pair-card', style, status === 'hidden' ? 'pair-hidden' : null, status === 'matched' ? 'pair-matched' : null, isFresh ? 'pair-fresh' : null]),
+          'aria-label': pairsCardLabel(round, card),
+          'aria-disabled': status === 'matched' ? 'true' : null,
+          'data-focus-key': 'pair-' + card.id,
+          onClick: function () {
+            handlePairsFlip(card.id);
+          },
+        },
+        status === 'hidden'
+          ? h('span', { class: 'pair-number' }, String(card.id + 1))
+          : h('span', { class: 'pair-face' }, card.emoji)
+      );
+    });
+
+    return C.Card(
+      { className: 'p-5 b-card border-2 br-subtle' },
+      gameCardHeader('🃏', 'Pares', pairsEngine.PAIR_COUNT + ' PARES'),
+      C.Text(
+        { variant: 'body', className: 't-muted mb-4' },
+        'Vire duas cartas por vez e encontre os pares iguais. Sem pressa!'
+      ),
+      row(
+        { class: 'items-center justify-between flex-wrap gap-2 mb-4 px-2 pairs-stats' },
+        C.Text(
+          { variant: 'body', className: 'fw-bold t-fg' },
+          'Pares encontrados: ' + found + ' / ' + pairsEngine.PAIR_COUNT
+        ),
+        C.Text({ variant: 'caption' }, 'Tentativas: ' + round.attempts)
+      ),
+      view({ class: 'pairs-grid mb-4' }, cardNodes),
+
+      round.pendingMismatch
+        ? C.Text(
+            { variant: 'caption', className: 't-center t-muted mb-2' },
+            'Essas duas não combinam. Elas vão virar de volta, sem pressa.'
+          )
+        : null,
+
+      round.isComplete
+        ? view(
+            { class: 'mt-2' },
+            C.Celebration(
+              '🌟 Todos os Pares!',
+              'Você encontrou os ' + pairsEngine.PAIR_COUNT + ' pares. Parabéns!'
+            ),
+            C.Button({
+              variant: 'default',
+              size: 'lg',
+              fullWidth: true,
+              onPress: handlePairsNextRound,
+              label: 'JOGAR OUTRA RODADA',
+            })
+          )
+        : null
+    );
+  }
+
+  /* ---- 7. Complete o Ditado --------------------------------------------- */
+  function renderProverbsGame() {
+    var s = ensureState();
+    var round = s.proverbsRound;
+    var proverb = round.proverb;
+
+    // O ditado com a lacuna; resolvido, a palavra certa aparece no lugar.
+    var sentence = C.Text(
+      { variant: 'body-lead', className: 'fw-bold t-fg proverb-text' },
+      proverb.start + ' ',
+      round.isSolved
+        ? h('span', { class: 'proverb-answer' }, proverb.answer)
+        : [
+            h('span', { class: 'sr-only' }, 'lacuna'),
+            h('span', { class: 'proverb-blank', 'aria-hidden': 'true' }, '______'),
+          ],
+      proverb.end
+    );
+
+    var optionTiles = round.options.map(function (option) {
+      var isWrong = round.disabledOptions.indexOf(option) >= 0;
+      return choiceTile({
+        label: option,
+        textClass: 't-xl fw-bold t-fg',
+        isWrong: isWrong,
+        isSolved: round.isSolved,
+        isCorrectPicked: round.isSolved && option === proverb.answer,
+        focusKey: 'proverb-' + option,
+        onPress: function () {
+          handleProverbsSubmit(option);
+        },
+      });
+    });
+
+    return C.Card(
+      { className: 'p-5 b-card border-2 br-subtle' },
+      gameCardHeader('📜', 'Complete o Ditado', 'DITADOS'),
+      C.Text(
+        { variant: 'body', className: 't-muted mb-4' },
+        'Escolha a palavra que completa este ditado popular:'
+      ),
+      view({ class: 'p-4 b-surface border-2 br-subtle rounded-2xl mb-4 proverb-box' }, sentence),
+      C.Text({ variant: 'caption', className: 'mb-2 t-center' }, 'Qual palavra completa o ditado?'),
+      view({ class: 'stack-options mb-4' }, optionTiles),
+
+      round.showHint && !round.isSolved ? softHint(PROVERBS_HINT) : null,
+
+      round.isSolved
+        ? view(
+            { class: 'mt-2' },
+            view(
+              { class: 'p-4 b-surface border br-strong rounded-2xl mb-4' },
+              C.Text({ variant: 'title-md', className: 't-center mb-2' }, '📜 Muito bem!'),
+              C.Text(
+                { variant: 'body-lead', className: 'fw-bold t-fg t-center mb-2' },
+                '“' + proverbsEngine.fullText(proverb) + '”'
+              ),
+              C.Text({ variant: 'body', className: 't-muted t-center' }, 'Significa: ' + proverb.meaning)
+            ),
+            C.Button({
+              variant: 'default',
+              size: 'lg',
+              fullWidth: true,
+              onPress: handleProverbsNext,
+              label: 'PRÓXIMO DITADO',
+            })
+          )
+        : null
+    );
+  }
+
+  /* ---- 8. Conta do Mercado ---------------------------------------------- */
+  function renderMarketGame() {
+    var s = ensureState();
+    var round = s.marketRound;
+    var problem = round.problem;
+
+    var optionTiles = round.options.map(function (cents) {
+      return choiceTile({
+        label: marketEngine.formatBRL(cents),
+        textClass: 'font-mono fw-bold t-xl t-fg',
+        isWrong: round.disabledOptions.indexOf(cents) >= 0,
+        isSolved: round.isSolved,
+        isCorrectPicked: round.isSolved && cents === problem.correctCents,
+        focusKey: 'market-' + cents,
+        onPress: function () {
+          handleMarketSubmit(cents);
+        },
+      });
+    });
+
+    return C.Card(
+      { className: 'p-5 b-card border-2 br-subtle' },
+      gameCardHeader('🛒', 'Conta do Mercado', 'DINHEIRO'),
+      C.Text(
+        { variant: 'body', className: 't-muted mb-4' },
+        'Faça a conta com calma e escolha a resposta certa:'
+      ),
+      view(
+        { class: 'p-4 b-surface border-2 br-subtle rounded-2xl mb-4' },
+        C.Text({ variant: 'body-lead', className: 'fw-bold t-fg' }, marketEngine.promptFor(problem))
+      ),
+      C.Text({ variant: 'caption', className: 'mb-2 t-center' }, 'Quanto dá?'),
+      view({ class: 'stack-options mb-4' }, optionTiles),
+
+      round.showHint && !round.isSolved ? softHint(marketEngine.hintFor(problem)) : null,
+
+      round.isSolved
+        ? view(
+            { class: 'mt-2' },
+            C.Celebration('🛒 Conta Certa!', marketEngine.explanationFor(problem)),
+            C.Button({
+              variant: 'default',
+              size: 'lg',
+              fullWidth: true,
+              onPress: handleMarketNext,
+              label: 'PRÓXIMA CONTA',
+            })
+          )
+        : null
+    );
+  }
+
+  /* ---- 9. Ordem Certa --------------------------------------------------- */
+  /* Botão de ação que "apaga" sem `disabled` nativo (mantém o foco do teclado). */
+  function softButton(props, isSoftDisabled, focusKey) {
+    var btn = C.Button(props);
+    if (isSoftDisabled) btn.setAttribute('aria-disabled', 'true');
+    if (focusKey) btn.setAttribute('data-focus-key', focusKey);
+    return btn;
+  }
+
+  function renderOrderGame() {
+    var s = ensureState();
+    var round = s.orderRound;
+    var picked = round.pickedIds;
+
+    var stepButtons = round.steps.map(function (step) {
+      var position = picked.indexOf(step.id);
+      var isPicked = position >= 0;
+      var style = isPicked ? 'b-subtle br-fg' : 'b-surface br-subtle';
+      if (round.status === 'wrong' && isPicked) style = 'b-card br-hairline op-40';
+
+      return h(
+        'button',
+        {
+          type: 'button',
+          class: EM.dom.cls(['tile', 'order-step', style]),
+          'aria-disabled': isPicked || round.isComplete || round.status === 'wrong' ? 'true' : null,
+          'data-focus-key': 'order-step-' + step.id,
+          onClick: function () {
+            handleOrderPick(step.id);
+          },
+        },
+        h('span', { class: EM.dom.cls(['order-num', isPicked ? 'order-num-on' : null]) }, isPicked ? String(position + 1) : ''),
+        h('span', { class: 'order-text' }, step.text)
+      );
+    });
+
+    var canEdit = picked.length > 0 && !round.isComplete;
+
+    return C.Card(
+      { className: 'p-5 b-card border-2 br-subtle' },
+      gameCardHeader('📋', 'Ordem Certa', orderEngine.STEP_COUNT + ' PASSOS'),
+      C.Text(
+        { variant: 'body-lead', className: 't-fg fw-medium mb-2' },
+        'Toque nos passos de ' + round.routine.title + ', na ordem em que acontecem: do primeiro ao último.'
+      ),
+      C.Text(
+        { variant: 'caption', className: 'mb-4 t-muted' },
+        'Passos escolhidos: ' + picked.length + ' / ' + orderEngine.STEP_COUNT
+      ),
+      view({ class: 'order-list mb-4' }, stepButtons),
+
+      round.isComplete
+        ? null
+        : row(
+            { class: 'order-actions mb-4' },
+            softButton(
+              {
+                variant: 'outline',
+                size: 'sm',
+                onPress: handleOrderUndo,
+                label: '↩ DESFAZER',
+                className: 'order-action',
+              },
+              !canEdit,
+              'order-undo'
+            ),
+            softButton(
+              {
+                variant: 'outline',
+                size: 'sm',
+                onPress: handleOrderRestart,
+                label: 'RECOMEÇAR',
+                className: 'order-action',
+              },
+              !canEdit,
+              'order-restart'
+            )
+          ),
+
+      round.status === 'wrong'
+        ? softHint(
+            'Toque em RECOMEÇAR para escolher a ordem outra vez, ou em DESFAZER para trocar só o último passo.',
+            'Quase! Vamos tentar de novo.'
+          )
+        : null,
+
+      round.isComplete
+        ? view(
+            { class: 'mt-2' },
+            C.Celebration(
+              '🎉 Ordem Perfeita!',
+              'Você organizou os ' + orderEngine.STEP_COUNT + ' passos de ' + round.routine.title + '.'
+            ),
+            C.Button({
+              variant: 'default',
+              size: 'lg',
+              fullWidth: true,
+              onPress: handleOrderNext,
+              label: 'PRÓXIMA ROTINA',
+            })
+          )
+        : null
+    );
+  }
+
+  /* =========================================================================
      BrainGymScreenView.tsx — menu de modalidades
      ======================================================================= */
   var GAME_MENU_ITEMS = [
@@ -832,6 +1414,34 @@
       subtitle: 'Ouça trechos de canções clássicas inesquecíveis da MPB.',
       emoji: '🎵',
       tag: 'AUDITIVO',
+    },
+    {
+      id: 'PAIRS',
+      title: '6. Pares',
+      subtitle: 'Vire as cartas e encontre os 6 pares de figuras iguais.',
+      emoji: '🃏',
+      tag: 'MENTE · MEMÓRIA',
+    },
+    {
+      id: 'PROVERBS',
+      title: '7. Complete o Ditado',
+      subtitle: 'Lembre a palavra que completa os ditados populares brasileiros.',
+      emoji: '📜',
+      tag: 'MENTE · CULTURA',
+    },
+    {
+      id: 'MARKET',
+      title: '8. Conta do Mercado',
+      subtitle: 'Some, calcule o troco e dobre preços com dinheiro de verdade.',
+      emoji: '🛒',
+      tag: 'MENTE · CÁLCULO',
+    },
+    {
+      id: 'ORDER',
+      title: '9. Ordem Certa',
+      subtitle: 'Coloque em ordem os 4 passos de uma tarefa do dia a dia.',
+      emoji: '📋',
+      tag: 'MENTE · PLANEJAMENTO',
     },
   ];
 
@@ -895,6 +1505,10 @@
       else if (s.activeGame === 'WORDS') gameView = renderWordsGame();
       else if (s.activeGame === 'ATTENTION') gameView = renderAttentionGame();
       else if (s.activeGame === 'MUSIC') gameView = renderMusicGame();
+      else if (s.activeGame === 'PAIRS') gameView = renderPairsGame();
+      else if (s.activeGame === 'PROVERBS') gameView = renderProverbsGame();
+      else if (s.activeGame === 'MARKET') gameView = renderMarketGame();
+      else if (s.activeGame === 'ORDER') gameView = renderOrderGame();
     }
 
     return view(
@@ -936,7 +1550,10 @@
       C.StatsBanner({
         icon: '🧠',
         eyebrow: 'ATIVIDADES CONCLUÍDAS',
-        value: s.completedGamesCount + ' sessões de ginástica mental',
+        value:
+          s.completedGamesCount +
+          (s.completedGamesCount === 1 ? ' sessão' : ' sessões') +
+          ' de ginástica mental',
         badge: '+10 PONTOS / JOGO',
       }),
 

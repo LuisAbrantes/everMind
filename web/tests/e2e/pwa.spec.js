@@ -46,6 +46,36 @@ test.describe('PWA assets', () => {
     expect(missing).toEqual([]);
   });
 
+  test('every <script>/<link rel=stylesheet> of index.html is in the service-worker app shell (offline gets the new games)', async ({ page, request }) => {
+    await openApp(page);
+    const html = await (await request.get(new URL('index.html', page.url()).toString())).text();
+    const src = await (await request.get(new URL('sw.js', page.url()).toString())).text();
+    const shell = new Set([...src.matchAll(/'\.\/([^']*)'/g)].map((m) => m[1]));
+    const used = [
+      ...[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map((m) => m[1]),
+      ...[...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map((m) => m[1]),
+    ];
+    expect(used.length).toBeGreaterThan(40);
+    expect(used.filter((f) => !shell.has(f))).toEqual([]);
+    for (const f of ['js/games/game-utils.js', 'js/games/pairs-game-engine.js', 'js/games/proverbs-game-engine.js', 'js/games/market-game-engine.js', 'js/games/order-game-engine.js']) {
+      expect(used, f).toContain(f);
+      expect(shell.has(f), f).toBe(true);
+    }
+    // the helper loads before every engine that uses it, and the engines before the screens
+    const order = (f) => html.indexOf(f);
+    expect(order('game-utils.js')).toBeLessThan(order('pairs-game-engine.js'));
+    expect(order('order-game-engine.js')).toBeLessThan(order('components.js'));
+    expect(order('order-game-engine.js')).toBeLessThan(order('brain-gym.js'));
+  });
+
+  test('the cache name was bumped (evermind-YYYY-MM-DD<letter>) for this release', async ({ page, request }) => {
+    await openApp(page);
+    const src = await (await request.get(new URL('sw.js', page.url()).toString())).text();
+    const name = (src.match(/CACHE_NAME = '([^']+)'/) || [])[1];
+    expect(name).toMatch(/^evermind-\d{4}-\d{2}-\d{2}[a-z]$/);
+    expect(name).not.toBe('evermind-2026-10-21c');
+  });
+
   test('every script/stylesheet referenced by index.html loads (no 404s)', async ({ page }) => {
     const bad = [];
     page.on('response', (r) => { if (r.status() >= 400) bad.push(`${r.status()} ${r.url()}`); });

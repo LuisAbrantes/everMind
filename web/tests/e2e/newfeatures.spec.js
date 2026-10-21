@@ -1,5 +1,6 @@
 const { test, expect, openApp, goTab, tab, TABS, openGame, progress, PROGRESS_KEY, seedAndReload } = require('../support/fixtures');
 const { expectNoHorizontalOverflow, expectTapTargets } = require('../support/checks');
+const { ALL_GAMES } = require('../support/games');
 
 test.describe('5-tab navigation', () => {
   test('exactly 5 plain-button tabs (no ARIA tab roles), >= 44px, none cut off', async ({ page }) => {
@@ -56,7 +57,7 @@ test.describe('Settings', () => {
       await expectNoHorizontalOverflow(page, `${label} @130%`);
       await expectTapTargets(page, `${label} @130%`);
     }
-    for (const id of ['MEMORY', 'SEQUENCE', 'WORDS', 'ATTENTION', 'MUSIC']) {
+    for (const id of ALL_GAMES) {
       await openGame(page, id);
       await expectNoHorizontalOverflow(page, `${id} @130%`);
       await expectTapTargets(page, `${id} @130%`);

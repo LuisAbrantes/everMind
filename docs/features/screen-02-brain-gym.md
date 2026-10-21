@@ -51,8 +51,8 @@
 - **Feedback:** Ao tocar no `8`, a caixa $[?]$ se transforma no número com brilho azul vibrante e vibração positiva.
 
 ### Jogo 3: Formação de Palavras
-- **Fluxo:** Sorteia uma letra (ex.: letra *"C"*) e sugere um campo temático (ex.: *"Frutas ou Objetos de Casa"*).
-- **Opções:** O usuário escolhe entre sugestões de palavras familiares ou digita com teclado acessível.
+- **Fluxo:** Sorteia uma letra e **uma** categoria (ex.: *"Toque em 3 FRUTAS que começam com M"*).
+- **Opções:** 8 palavras: 4 que servem + 4 claramente erradas (tema certo e letra errada, ou letra certa e tema errado). Tocar numa errada gera uma dica carinhosa (*"Quase! "Banana" é uma fruta, mas não começa com M. Tente outra."*), a opção fica desativada e nada é descontado. Completa ao encontrar 3.
 
 ### Jogo 4: Atenção e Diferenças
 - **Fluxo:** Apresenta uma grade de 4 ou 6 ilustrações grandes e bem definidas, onde apenas uma contém uma variação suave (ex.: 3 relógios marcando 3h e um marcando 6h).
@@ -61,6 +61,14 @@
 ### Jogo 5: Reconhecimento Musical
 - **Fluxo:** Toca um trecho curto de 5 a 10 segundos de uma melodia clássica ou canção popular brasileira bem conhecida (ex.: *Aquarela do Brasil, Asa Branca, Carinhoso*).
 - **Opções:** 3 botões com nomes das canções para escolha relaxante.
+
+---
+
+### Jogos 6 a 9 (adicionados em outubro/2026 — variedade de habilidades)
+- **Jogo 6 — Pares:** 12 cartas em grade 3×4; vira duas por vez; as que não combinam viram de volta após uma pausa calma (~1 s) sem bloquear toques; mostra *"Pares encontrados: n / 6"* e *"Tentativas"* (só um número neutro).
+- **Jogo 7 — Complete o Ditado:** ditado popular com uma palavra faltando e 3 opções (1 certa, 2 plausíveis); ao acertar mostra o ditado inteiro e o significado em uma linha.
+- **Jogo 8 — Conta do Mercado:** problemas curtos com R$ (somar 2 itens, troco de R$ 10/20/50, 2 × preço); ao acertar explica a conta em uma linha.
+- **Jogo 9 — Ordem Certa:** 4 passos embaralhados de uma rotina; o usuário toca na ordem certa (números 1–4); DESFAZER tira o último; ordem errada = *"Quase! Vamos tentar de novo"* + RECOMEÇAR.
 
 ---
 

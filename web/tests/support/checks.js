@@ -1,7 +1,13 @@
 const { expect } = require('@playwright/test');
 
+/** Lets finite CSS animations (card flip, reveal) finish: mid-flip boxes are not final geometry. */
+async function settleAnimations(page) {
+  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => null))));
+}
+
 /** No horizontal overflow of the document, #screen, or any visible element. */
 async function expectNoHorizontalOverflow(page, label = '') {
+  await settleAnimations(page);
   const res = await page.evaluate(() => {
     const vw = document.documentElement.clientWidth;
     const out = [];
@@ -28,6 +34,7 @@ async function expectNoHorizontalOverflow(page, label = '') {
 
 /** Every visible button / tab >= 44x44 CSS px. */
 async function expectTapTargets(page, label = '') {
+  await settleAnimations(page);
   const small = await page.evaluate(() => {
     const out = [];
     for (const el of document.querySelectorAll('button, [role="tab"], a[href]')) {
@@ -78,4 +85,27 @@ async function expectAntiGuilt(page, label = '') {
   expect(res.reds, `red computed colors ${label}`).toEqual([]);
 }
 
-module.exports = { expectNoHorizontalOverflow, expectTapTargets, expectAntiGuilt, PUNITIVE };
+/**
+ * WCAG 2.5.3 (label in name): every button with an aria-label must still contain
+ * its visible text, and every pair/step control that changes label must carry a
+ * stable data-focus-key so keyboard focus survives the re-render.
+ */
+async function expectLabelInName(page, label = '') {
+  const bad = await page.evaluate(() => {
+    const norm = (t) => String(t || '').replace(/[\s\u00a0]+/g, ' ').trim().toLowerCase();
+    const out = [];
+    for (const el of document.querySelectorAll('#screen button[aria-label]')) {
+      const visible = norm(el.textContent);
+      if (visible && !norm(el.getAttribute('aria-label')).includes(visible)) {
+        out.push(`"${el.getAttribute('aria-label')}" hides visible text "${visible}"`);
+      }
+    }
+    for (const el of document.querySelectorAll('#screen .pair-card, #screen .order-step')) {
+      if (!el.getAttribute('data-focus-key')) out.push(`missing data-focus-key on ${el.className}`);
+    }
+    return out;
+  });
+  expect(bad, `label-in-name ${label}`).toEqual([]);
+}
+
+module.exports = { expectNoHorizontalOverflow, expectTapTargets, expectAntiGuilt, expectLabelInName, PUNITIVE };

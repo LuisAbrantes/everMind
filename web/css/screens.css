@@ -347,3 +347,169 @@
   text-align: left;
 }
 .v.page-header > .flex-1 { flex: 1 1 10rem; min-width: 0; text-align: left; align-items: flex-start; }
+
+/* ============================================================================
+   GINÁSTICA CEREBRAL — opções "apagadas" e jogos novos
+   (Palavras, Pares, Complete o Ditado, Conta do Mercado, Ordem Certa)
+   Monocromático: só os tokens existentes. Estado = borda, preenchimento e
+   tracejado (`op-40`), nunca só cor. Transições/animações são desligadas por
+   prefers-reduced-motion (tokens.css) e, abaixo, também pelas regras locais.
+   ========================================================================== */
+
+/* Opção que "apaga" sem `disabled` nativo (o foco do teclado não se perde):
+   o toque é ignorado. */
+.tile[aria-disabled='true'] { cursor: default; pointer-events: none; }
+
+/* ---- Formação de Palavras: grade que respeita o tamanho do texto ----------
+   Palavras como "Jardineiro" ou "Teleférico" não cabem em 48% de 320 px quando o
+   texto é grande. A grade usa `rem` (acompanha "Tamanho do texto" em Ajustes):
+   2 colunas quando cabem, 1 coluna quando não cabem. Nunca corta nem vaza. */
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+  gap: 12px;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+.words-grid > .tile {
+  width: auto;
+  min-width: 0;
+  margin-bottom: 0;
+  padding: 12px 10px;
+}
+.words-grid > .tile p { overflow-wrap: anywhere; }
+
+/* ---- Pares: grade 3 x 4 --------------------------------------------------- */
+.pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 120px));
+  justify-content: center;
+  gap: 8px;
+}
+
+/* `.tile` traz width 48% / margem / padding de 16px: aqui cada carta é um
+   quadrado que preenche a coluna (~74 px em 320 px de tela, nunca < 72 px). */
+.pairs-grid > .tile.pair-card {
+  width: auto;
+  margin-bottom: 0;
+  padding: 4px;
+  min-height: 72px;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+}
+
+.pair-face {
+  font-size: clamp(1.75rem, 9vw, 2.75rem);
+  line-height: 1;
+}
+
+/* Costas da carta: o NÚMERO fica visível (é o nome acessível: "Carta 3: …") */
+.pair-number {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.pair-hidden {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 7px,
+    rgba(255, 255, 255, 0.05) 7px 14px
+  );
+}
+
+/* Par encontrado: além da borda, um ✓ (o estado nunca depende só de brilho/cor).
+   O nome acessível vem do aria-label, que não inclui este símbolo decorativo. */
+.pair-matched { position: relative; }
+.pair-matched::after {
+  content: '✓';
+  position: absolute;
+  top: 4px;
+  right: 7px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text-fg);
+}
+
+@keyframes em-pair-flip {
+  from { transform: perspective(420px) rotateY(90deg); opacity: 0.3; }
+  to   { transform: none; opacity: 1; }
+}
+.pair-fresh { animation: em-pair-flip 0.28s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .pair-fresh { animation: none; }
+}
+
+/* ---- Complete o Ditado ---------------------------------------------------- */
+.proverb-text { text-align: center; line-height: 1.5; }
+.proverb-blank { white-space: nowrap; font-weight: 800; letter-spacing: 0; }
+.proverb-answer {
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+
+/* ---- Ordem Certa ---------------------------------------------------------- */
+.order-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* `.tile` é coluna centralizada de 48%; aqui o passo é uma linha de largura total */
+.order-list > .tile.order-step {
+  width: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0;
+  min-height: 64px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.order-num {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  border: 2px dashed var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-fg);
+}
+.order-num-on {
+  border-style: solid;
+  border-color: var(--text-fg);
+  background-color: var(--text-fg);
+  color: var(--text-invert);
+}
+/* ordem completa ainda não certa: números ficam à vista, mas "apagados" */
+.op-40 .order-num-on {
+  background-color: transparent;
+  border-style: dashed;
+  border-color: var(--border-hairline);
+  color: var(--text-muted);
+}
+
+.order-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-fg);
+}
+.op-40 .order-text { color: var(--text-muted); }
+
+.order-actions { flex-wrap: wrap; gap: 12px; }
+.order-action { flex: 1 1 8rem; min-width: 0; }
+.order-action[aria-disabled='true'] { cursor: default; }

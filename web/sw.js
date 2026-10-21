@@ -17,7 +17,7 @@
 
 /* Troque a versão a cada deploy: o activate apaga os caches antigos. */
 var NAVIGATION_TIMEOUT_MS = 3000;
-var CACHE_NAME = 'evermind-2026-10-21c';
+var CACHE_NAME = 'evermind-2026-10-21d';
 
 /* O app shell completo. `index.html` entra para que a navegação offline
    funcione mesmo em cold start. */
@@ -52,11 +52,16 @@ var APP_SHELL = [
   './js/domain/supabase-client.js',
   './js/domain/supabase-sync.js',
 
+  './js/games/game-utils.js',
   './js/games/memory-game-engine.js',
   './js/games/sequence-game-engine.js',
   './js/games/words-game-engine.js',
   './js/games/attention-game-engine.js',
   './js/games/music-game-engine.js',
+  './js/games/pairs-game-engine.js',
+  './js/games/proverbs-game-engine.js',
+  './js/games/market-game-engine.js',
+  './js/games/order-game-engine.js',
 
   './js/ui/components.js',
 

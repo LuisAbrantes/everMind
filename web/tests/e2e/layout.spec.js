@@ -1,8 +1,8 @@
 const { test, expect, openApp, goTab, TABS } = require('../support/fixtures');
 const { expectNoHorizontalOverflow, expectTapTargets } = require('../support/checks');
 
-const { openGame } = require('../support/fixtures');
-const GAMES = ['MEMORY', 'SEQUENCE', 'WORDS', 'ATTENTION', 'MUSIC'];
+const { openGame, gymState, gameTiles } = require('../support/fixtures');
+const { ALL_GAMES: GAMES } = require('../support/games');
 
 test.describe('layout & touch targets', () => {
   test('every screen (7 + Mais + Ajustes): no horizontal overflow, all buttons/tabs >= 44px', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('layout & touch targets', () => {
     }
   });
 
-  test('all 5 games (every phase): no overflow, tap targets >= 44px', async ({ page }) => {
+  test('all 9 games (every phase): no overflow, tap targets >= 44px', async ({ page }) => {
     await openApp(page);
     for (const id of GAMES) {
       await openGame(page, id);
@@ -42,6 +42,53 @@ test.describe('layout & touch targets', () => {
     await page.locator('#screen button.tile').nth(correct).click();
     await expectNoHorizontalOverflow(page, 'sequence solved');
     await expectTapTargets(page, 'sequence solved');
+  });
+
+  test('Palavras (after a wrong tap and when solved) and the 4 new games (wrong + solved states): no overflow, tap targets >= 44px', async ({ page }) => {
+    await openApp(page);
+    const check = async (label) => { await expectNoHorizontalOverflow(page, label); await expectTapTargets(page, label); };
+
+    await openGame(page, 'WORDS');
+    const w = await gymState(page, '({ pool: s.wordsRound.optionsPool, valid: s.wordsRound.challenge.validSuggestions })');
+    await gameTiles(page).nth(w.pool.findIndex((x) => !w.valid.includes(x))).click();
+    await check('words wrong');
+    for (const [i, word] of w.pool.entries()) if (w.valid.includes(word) && !(await page.getByText('Vocabulário Brilhante').count())) await gameTiles(page).nth(i).click();
+    await check('words solved');
+
+    await openGame(page, 'PAIRS');
+    const ids = await gymState(page, 's.pairsRound.cards.map((c) => c.pairId)');
+    const b = ids.findIndex((p, i) => i > 0 && p !== ids[0]);
+    await page.locator('#screen button.pair-card').nth(0).click();
+    await page.locator('#screen button.pair-card').nth(b).click();
+    await check('pairs mismatch');
+    await expect(page.locator('#screen button.pair-card').nth(0)).toHaveAttribute('aria-label', 'Carta 1: escondida'); // the pause is over
+    const by = {};
+    ids.forEach((id, i) => { (by[id] = by[id] || []).push(i); });
+    for (const [i, j] of Object.values(by)) { await page.locator('#screen button.pair-card').nth(i).click(); await page.locator('#screen button.pair-card').nth(j).click(); }
+    await expect(page.locator('#screen').getByText('Todos os Pares')).toBeVisible();
+    await check('pairs solved');
+
+    await openGame(page, 'PROVERBS');
+    let q = await gymState(page, '({ a: s.proverbsRound.proverb.answer, o: s.proverbsRound.options })');
+    await gameTiles(page).nth(q.o.findIndex((x) => x !== q.a)).click();
+    await check('proverbs wrong');
+    await gameTiles(page).nth(q.o.indexOf(q.a)).click();
+    await check('proverbs solved');
+
+    await openGame(page, 'MARKET');
+    q = await gymState(page, '({ a: s.marketRound.problem.correctCents, o: s.marketRound.options })');
+    await gameTiles(page).nth(q.o.findIndex((x) => x !== q.a)).click();
+    await check('market wrong');
+    await gameTiles(page).nth(q.o.indexOf(q.a)).click();
+    await check('market solved');
+
+    await openGame(page, 'ORDER');
+    const shown = await gymState(page, 's.orderRound.steps.map((x) => x.id)');
+    for (let i = 0; i < 4; i++) await gameTiles(page).nth(i).click();
+    await check('order wrong');
+    await page.getByRole('button', { name: 'RECOMEÇAR' }).click();
+    for (const id of [0, 1, 2, 3]) await gameTiles(page).nth(shown.indexOf(id)).click();
+    await check('order solved');
   });
 
   test('home with all triad challenges completed: no overflow', async ({ page }) => {

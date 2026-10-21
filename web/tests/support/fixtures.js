@@ -114,8 +114,9 @@ const gameTiles = (page) => page.locator('#screen button.tile');
 const GAME_TITLES = {
   MEMORY: 'Memória Visual', SEQUENCE: 'Sequência Lógica', WORDS: 'Formação de Palavras',
   ATTENTION: 'Atenção & Diferenças', MUSIC: 'Memória Musical',
+  PAIRS: 'Pares', PROVERBS: 'Complete o Ditado', MARKET: 'Conta do Mercado', ORDER: 'Ordem Certa',
 };
-/** Open a game from the Mente menu. id: MEMORY|SEQUENCE|WORDS|ATTENTION|MUSIC */
+/** Open a game from the Mente menu. id: MEMORY|SEQUENCE|WORDS|ATTENTION|MUSIC|PAIRS|PROVERBS|MARKET|ORDER */
 async function openGame(page, id) {
   await goTab(page, 'Mente');
   const back = page.getByRole('button', { name: /← MENU/ });

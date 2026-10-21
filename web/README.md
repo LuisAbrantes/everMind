@@ -1,6 +1,6 @@
 # everMind Web — portagem do React Native para HTML/CSS/JS puro
 
-> **Status:** ✅ funcional e verificado · **Escopo:** portagem 1:1 das 7 telas + 5 minijogos · **Alvo:** PWA mobile-first
+> **Status:** ✅ funcional e verificado · **Escopo:** portagem 1:1 das 7 telas + 5 minijogos originais + 4 minijogos novos (Pares, Complete o Ditado, Conta do Mercado, Ordem Certa) · **Alvo:** PWA mobile-first
 
 Este diretório é uma **cópia independente** do aplicativo everMind, escrito em
 HTML, CSS e JavaScript puros — **sem React, sem TypeScript, sem build, sem
@@ -75,12 +75,17 @@ evermind-web/
 │   │   ├── feedback-service.js
 │   │   ├── supabase-client.js
 │   │   └── supabase-sync.js
-│   ├── games/                  # ← portagem de src/modules/brain/**
+│   ├── games/                  # ← portagem de src/modules/brain/** (+ 4 jogos novos)
+│   │   ├── game-utils.js       # PRNG com semente + embaralhamento reproduzível (jogos novos)
 │   │   ├── memory-game-engine.js
 │   │   ├── sequence-game-engine.js
 │   │   ├── words-game-engine.js
 │   │   ├── attention-game-engine.js
-│   │   └── music-game-engine.js
+│   │   ├── music-game-engine.js
+│   │   ├── pairs-game-engine.js     # novo — Pares (jogo da memória, 6 pares)
+│   │   ├── proverbs-game-engine.js  # novo — Complete o Ditado
+│   │   ├── market-game-engine.js    # novo — Conta do Mercado (R$ em centavos)
+│   │   └── order-game-engine.js     # novo — Ordem Certa (sequenciamento)
 │   ├── ui/
 │   │   └── components.js       # Text, Button, Card, Badge, Avatar, Progress
 │   ├── screens/                # ← portagem de src/screens/**
@@ -253,7 +258,9 @@ Verificado: `Árvore` ordena como `Arvore` (primeira), entre `A` e `B`.
 ### 4.5 `words` usa o comparador enviesado
 
 `sort(() => 0.5 - Math.random())` — **não** é um Fisher–Yates uniforme. É o que
-dá a sensação de sorteio e é o que o original usa.
+dá a sensação de sorteio e é o que o original usa. (O conjunto mostrado agora
+mistura 4 palavras que servem + 4 distratores — ver §6, item 3 —, mas o embaralhamento
+continua sendo este.)
 
 ### 4.6 Retorno do mesmo objeto em caminhos de "no-op"
 
@@ -359,7 +366,7 @@ vez de mentir para o usuário.
 
 ## 6. Adições em relação ao original
 
-Duas, ambas deliberadas e pequenas:
+Três, todas deliberadas:
 
 1. **Feedback háptico real.** O original instanciava `MockFeedbackService` em
    todos os hooks, que só incrementava contadores — ou seja, **todo o feedback
@@ -370,6 +377,32 @@ Duas, ambas deliberadas e pequenas:
    (`docs/features/rewards-and-brain-evolution.md` §1.3) previa uma celebração de
    3 segundos na troca de estágio, mas o app nunca implementou. A porta anuncia
    com um toast breve e discreto, sem confete barulhento nem cor de alerta.
+3. **Formação de Palavras com o que decidir + 4 jogos novos (outubro/2026).**
+   O jogo de palavras original dizia "TODAS as sugestões são válidas": não havia
+   nada a decidir. Agora cada desafio (10, de letras e temas variados) tem
+   `validSuggestions` e `distractors` — palavras *claramente* erradas, de dois
+   tipos sem ambiguidade (tema certo + letra errada, ou letra certa + tema
+   errado) —, a instrução diz exatamente o que tocar ("Toque em 3 FRUTAS que
+   começam com M") e tocar num distrator é uma dica carinhosa composta dos dados
+   + opção tracejada, sem perder nada. A rotação avança desafio a desafio
+   (`nextChallengeIndex`), em vez de repetir ao acaso.
+   Para dar **variedade** (não mais jogos de palavras), entraram 4 jogos de
+   outros tipos, todos com o mesmo caminho de conclusão
+   (`recordActivity`, pilar `MIND`, `game:<chave>`, +1 desafio / +10 pontos, uma
+   vez por rodada) e sem cronômetro:
+
+   | Jogo | Chave | Habilidade | Detalhe |
+   | :--- | :--- | :--- | :--- |
+   | Pares | `game:pairs` | memória | 12 cartas (3×4), 2 por vez; erro vira de volta após ~1,2 s e **tocar noutra carta não bloqueia**; sem `prefers-reduced-motion` a carta vira com uma animação curta |
+   | Complete o Ditado | `game:proverbs` | cultura/linguagem | 29 ditados tradicionais, 3 opções, mostra o ditado inteiro + significado |
+   | Conta do Mercado | `game:market` | cálculo | 21 contas em 3 faixas (somar, troco de R$ 10/20/50, 2 × preço); dinheiro em **centavos inteiros**, `R$ 7,50` só na borda |
+   | Ordem Certa | `game:order` | funções executivas | 15 rotinas de 4 passos; números 1–4 nos toques, DESFAZER, RECOMEÇAR |
+
+   Os controles que "apagam" (opção errada, passo já escolhido) usam
+   `aria-disabled` + borda tracejada, **não** `disabled` nativo: o foco do
+   teclado/leitor de tela não se perde no redesenho. Cartas e passos têm
+   `data-focus-key`. Os motores são puros e determinísticos por semente
+   (`game-utils.js`); nenhum afeta o catálogo da Tríade do Dia.
 
 ---
 
@@ -450,7 +483,7 @@ reproduzível. Resultado (verificação original, anterior à auditoria 2026-10)
 | Badges | catálogo de 5; desbloqueia em 5; não re-desbloqueia; preserva `unlockedAt` |
 | Memória | 5 alvos + 8 na grade; fecha nos 5 acertos; grade via ICU |
 | Sequência | erro → dica + desativa; acerto → resolve |
-| Palavras | 3 palavras completam; dicionário fechado rejeita inválida/duplicada; case-insensitive + trim |
+| Palavras | 3 palavras que servem completam; distrator = dica carinhosa + opção desativada (não conta); duplicada/desconhecida = no-op; case-insensitive + trim |
 | Atenção | erro → desativa sem resolver; acerto → resolve |
 | Música | toggle de playback; erro não para a reprodução; acerto para |
 | Storage | round-trip; ausente → `null`; namespace aplicado |

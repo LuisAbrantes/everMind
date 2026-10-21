@@ -157,7 +157,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_challenge_completions_user_event
   ON public.challenge_completions (user_id, event_key);
 
 COMMENT ON COLUMN public.challenge_completions.challenge_type IS 'Pilar: mind, movement, selfcare, connection ou discovery. Mapeia o "p" do completionLog do app (MIND|MOVEMENT|SELFCARE|CONNECTION|DISCOVERY) em minúsculas.';
-COMMENT ON COLUMN public.challenge_completions.challenge_id IS 'Atividade: o "k" do completionLog (walk, water, fruit, sleep, call, discovery, game:memory, game:sequence, game:words, game:attention, game:music).';
+COMMENT ON COLUMN public.challenge_completions.challenge_id IS 'Atividade: o "k" do completionLog (walk, water, fruit, sleep, call, discovery, game:memory, game:sequence, game:words, game:attention, game:music, game:pairs, game:proverbs, game:market, game:order).';
 COMMENT ON COLUMN public.challenge_completions.event_key IS 'Chave determinística de idempotência: "<date>|<k>|<n>", com n = nº de ordem (1, 2, ...) dessa atividade nesse dia. Reenviar o mesmo lote não duplica.';
 
 -- ----------------------------------------------------------------------------

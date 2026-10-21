@@ -48,9 +48,13 @@ O domínio organiza todas as atividades e metas de vida do indivíduo em quatro 
 - **Definição:** Sessão estruturada de exercícios cognitivos rápidos organizados em modalidades específicas:
   - **Memória Visual:** Retenção e recuperação de conjunto de 5 imagens/ícones temáticos.
   - **Sequência Lógica:** Identificação de padrões matemáticos/visuais simples (ex.: $2 \rightarrow 4 \rightarrow 6 \rightarrow [?]$).
-  - **Formação de Palavras:** Desafios de fluência verbal e vocabulário (ex.: palavras iniciadas com determinada letra).
+  - **Formação de Palavras:** Desafios de fluência verbal e vocabulário: encontrar palavras de uma categoria que começam com uma letra (ex.: *"Toque em 3 FRUTAS que começam com M"*), separando as que servem das que não servem; uma palavra que não serve gera uma dica carinhosa e nova tentativa.
   - **Atenção e Discriminação Visual:** Identificação de diferenças ou itens divergentes em cenários gráficos claros.
   - **Reconhecimento Musical:** Associação de trechos sonoros a canções, melodias ou memórias afetivas.
+  - **Pares:** Jogo da memória com 6 pares de figuras; os pares encontrados ficam abertos.
+  - **Complete o Ditado:** Cultura geral e linguagem: lembrar a palavra que completa um ditado popular brasileiro e conhecer o seu significado.
+  - **Conta do Mercado:** Raciocínio numérico do dia a dia com dinheiro brasileiro (somar uma compra, calcular o troco, dobrar um preço).
+  - **Ordem Certa:** Planejamento e sequenciamento (funções executivas): colocar em ordem os 4 passos de uma rotina cotidiana.
 
 ### 3.4. Descoberta Surpresa (*Surprise Discovery*)
 - **Definição:** Mecanismo de exploração espontânea e enriquecimento cultural/pessoal por meio de sorteio aleatório (*Botão Surpreender-me*) abrangendo 7 áreas de interesse:

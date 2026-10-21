@@ -1,19 +1,6 @@
-const { test, expect, openApp, goTab, progress, readJson, KEY, openGame, gameTiles, gymState } = require('../support/fixtures');
+const { test, expect, openApp, goTab, openGame, gameTiles, gymState } = require('../support/fixtures');
 const { expectNoHorizontalOverflow } = require('../support/checks');
-
-const MIND_KEY = KEY('evermind_mind_activities_count');
-
-async function snapshot(page) {
-  const p = await progress(page);
-  return { total: p.totalCompletedChallenges, points: p.growthPoints, mind: (await readJson(page, MIND_KEY)) || 0, mindPillar: p.pillarTotals.MIND };
-}
-async function expectAwarded(page, before, n = 1) {
-  const after = await snapshot(page);
-  expect(after.total, 'totalCompletedChallenges').toBe(before.total + n);
-  expect(after.points, 'growthPoints').toBe(before.points + 10 * n);
-  expect(after.mind, 'mind activities counter').toBe(before.mind + n);
-  expect(after.mindPillar, 'MIND pillar total').toBe(before.mindPillar + n);
-}
+const { snapshot, expectAwarded, ALL_GAMES } = require('../support/games');
 
 test.describe('minigames: wrong answer then correct answer awards +1 challenge / +10 points', () => {
   test('1. Memória Visual', async ({ page }) => {
@@ -67,20 +54,46 @@ test.describe('minigames: wrong answer then correct answer awards +1 challenge /
     await expect(page.getByRole('button', { name: 'PRÓXIMO DESAFIO' })).toBeVisible();
   });
 
-  test('3. Formação de Palavras (UI only offers valid words: no wrong path; completes at 3)', async ({ page }) => {
+  test('3. Formação de Palavras: wrong tap = soft hint + disabled tile, 3 valid words complete the round', async ({ page }) => {
     await openApp(page);
     await openGame(page, 'WORDS');
     const before = await snapshot(page);
     const tiles = gameTiles(page);
+    const { pool, valid, letter, instruction } = await gymState(page, `({
+      pool: s.wordsRound.optionsPool,
+      valid: s.wordsRound.challenge.validSuggestions,
+      letter: s.wordsRound.challenge.letter,
+      instruction: s.wordsRound.challenge.instruction,
+    })`);
+    await expect(tiles).toHaveCount(pool.length);
+    await expect(page.locator('#screen').getByText(instruction + '.', { exact: false }).first()).toBeVisible();
+    expect(pool.some((w) => !valid.includes(w)), 'the shown pool must hold options that do not fit').toBe(true);
+    expect(pool.some((w) => valid.includes(w)), 'the shown pool must hold options that fit').toBe(true);
 
-    await tiles.nth(0).click();
-    await expect(page.getByText('1 / 3').first()).toBeVisible();
-    await tiles.nth(1).click();
-    expect(await snapshot(page)).toEqual(before); // nothing awarded before completion
-    await tiles.nth(2).click();
-    await expect(page.getByText('Vocabulário Brilhante')).toBeVisible();
+    // a wrong tap: soft hint, tile gently disabled, counter unchanged, nothing awarded
+    const wrongIdx = pool.findIndex((w) => !valid.includes(w));
+    await tiles.nth(wrongIdx).click();
+    await expect(page.locator('#screen').getByText(`Quase! "${pool[wrongIdx]}"`, { exact: false })).toBeVisible();
+    await expect(page.locator('#screen').getByText('Tente outra.', { exact: false })).toBeVisible();
+    await expect(tiles.nth(wrongIdx)).toBeDisabled();
+    await expect(page.locator('#screen').getByText('0 / 3').first()).toBeVisible();
+    expect(await snapshot(page)).toEqual(before);
+
+    // valid ones are accepted until the target; nothing awarded before completion
+    const validIdx = pool.map((w, i) => (valid.includes(w) ? i : -1)).filter((i) => i >= 0);
+    await tiles.nth(validIdx[0]).click();
+    await expect(page.locator('#screen').getByText('1 / 3').first()).toBeVisible();
+    await tiles.nth(validIdx[1]).click();
+    expect(await snapshot(page)).toEqual(before);
+    await tiles.nth(validIdx[2]).click();
+    await expect(page.locator('#screen').getByText('Vocabulário Brilhante')).toBeVisible();
+    await expect(page.locator('#screen').getByText(`com a letra ${letter}`, { exact: false }).first()).toBeVisible();
     await expectAwarded(page, before);
     await expect(page.getByRole('button', { name: 'PRÓXIMO TEMA' })).toBeVisible();
+
+    // nothing else awards (forced clicks on the remaining tiles)
+    await tiles.nth(wrongIdx).click({ force: true });
+    await expectAwarded(page, before);
   });
 
   test('3b. Words engine: invalid word rejected, duplicates never accepted twice', async ({ page }) => {
@@ -170,12 +183,13 @@ test.describe('minigames: wrong answer then correct answer awards +1 challenge /
     await page.locator('#screen h1').waitFor();
     await expectAwarded(page, before);
     await goTab(page, 'Mente');
-    await expect(page.getByText(`${before.mind + 1} sessões de ginástica mental`)).toBeVisible();
+    const n = before.mind + 1;
+    await expect(page.getByText(`${n} ${n === 1 ? 'sessão' : 'sessões'} de ginástica mental`)).toBeVisible();
   });
 });
 
 test.describe('game card header', () => {
-  for (const id of ['MEMORY', 'SEQUENCE', 'WORDS', 'ATTENTION', 'MUSIC']) {
+  for (const id of ALL_GAMES) {
     test(`badge never overlaps title: ${id}`, async ({ page }) => {
       await openApp(page);
       await openGame(page, id);
