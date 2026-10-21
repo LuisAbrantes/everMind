@@ -336,3 +336,14 @@
 
 /* Reconhecimento Musical — aviso de som */
 .music-sound-note { text-align: center; margin: 4px 0 12px; }
+
+/* Cabeçalho de página: título à esquerda, ação à direita (quebra se faltar espaço).
+   `.v` (coluna) vence `.page-header` pela ordem dos arquivos, por isso o seletor composto. */
+.v.page-header {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+.v.page-header > .flex-1 { flex: 1 1 10rem; min-width: 0; text-align: left; align-items: flex-start; }
