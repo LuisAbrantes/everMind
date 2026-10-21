@@ -16,7 +16,7 @@
    ========================================================================== */
 
 /* Troque a versão a cada deploy: o activate apaga os caches antigos. */
-var CACHE_NAME = 'evermind-2026-10-21a';
+var CACHE_NAME = 'evermind-2026-10-21c';
 
 /* O app shell completo. `index.html` entra para que a navegação offline
    funcione mesmo em cold start. */

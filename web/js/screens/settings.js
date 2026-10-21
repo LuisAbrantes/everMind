@@ -18,9 +18,9 @@
   EM.VERSION = '0.1.0';
 
   var SIZES = [
-    { pct: 100, label: 'A−', name: 'texto menor (padrão)' },
-    { pct: 115, label: 'A', name: 'texto médio' },
-    { pct: 130, label: 'A+', name: 'texto maior' },
+    { pct: 100, label: 'Normal', name: 'texto normal (padrão)' },
+    { pct: 115, label: 'Grande', name: 'texto grande' },
+    { pct: 130, label: 'Maior', name: 'texto maior' },
   ];
 
   var confirmingDelete = false;

@@ -6,8 +6,10 @@
 
    Áudio: `EM.audio.playNotes(notes, {bpm, onEnd})` (feedback-service.js).
    As melodias são listas de notas: {note:'G4', beats:1} ou {rest:true, beats:1}.
-   Transcrições feitas de memória, em dó maior, ~8-12 notas; trechos
-   reconhecíveis, não partituras oficiais.
+   Trechos iniciais em dó maior, conferidos contra partituras e cifras
+   melódicas públicas (UFG "Brincando e Aprendendo", mamalisa.com, cifras
+   melódicas); o ritmo de Alecrim Dourado e de O Cravo é aproximado.
+   Não são partituras oficiais.
 
    API: createRound(index) é DETERMINÍSTICA: mesma entrada => mesma rodada
    (trilha index mod N; distratores = trilhas +1 e +3; posição da resposta
@@ -37,7 +39,7 @@
       genre: 'Cantiga de roda',
       soundSnippetDescription: '🎵 Pista: Uma cantiga que fala de um gato levado.',
       culturalNote: 'Cantiga tradicional muito cantada pelas crianças brasileiras.',
-      melody: [ { note: 'E4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'C4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 1 }, { note: 'F4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'F4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 1 } ],
       bpm: 96,
     },
     {
@@ -47,7 +49,7 @@
       genre: 'Cantiga de roda',
       soundSnippetDescription: '🎵 Pista: Uma roda de mãos dadas.',
       culturalNote: 'Brincadeira de roda em que todos giram juntos de mãos dadas.',
-      melody: [ { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'A4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'E4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'C4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'E5', beats: 0.5 }, { note: 'E5', beats: 0.5 }, { note: 'G5', beats: 0.5 }, { note: 'G5', beats: 0.5 }, { note: 'F5', beats: 0.5 }, { note: 'E5', beats: 0.5 }, { note: 'D5', beats: 0.5 }, { note: 'G5', beats: 0.5 }, { note: 'E5', beats: 0.5 }, { note: 'D5', beats: 0.5 }, { note: 'C5', beats: 1 } ],
       bpm: 96,
     },
     {
@@ -57,7 +59,7 @@
       genre: 'Cantiga de roda',
       soundSnippetDescription: '🎵 Pista: Uma flor que brigou com outra.',
       culturalNote: 'Cantiga de roda em que o cravo e a rosa se desentendem e fazem as pazes.',
-      melody: [ { note: 'C4', beats: 1 }, { note: 'E4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'A4', beats: 1 }, { note: 'G4', beats: 2 }, { note: 'E4', beats: 1 }, { note: 'C4', beats: 1 }, { note: 'D4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'E4', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'B4', beats: 0.5 }, { note: 'A4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'F4', beats: 1 } ],
       bpm: 96,
     },
     {
@@ -67,7 +69,7 @@
       genre: 'Cantiga de roda',
       soundSnippetDescription: '🎵 Pista: Um bicho que vive à beira do rio.',
       culturalNote: 'Cantiga de roda sobre o sapo na beira do rio, com a mulher do sapo fazendo renda.',
-      melody: [ { note: 'E4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'E4', beats: 1 }, { note: 'D4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'C4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 0.75 }, { note: 'A4', beats: 0.25 }, { note: 'G4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'C4', beats: 2 }, { note: 'G4', beats: 0.75 }, { note: 'A4', beats: 0.25 }, { note: 'G4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'C4', beats: 1 }, { note: 'C4', beats: 1 } ],
       bpm: 96,
     },
     {
@@ -77,7 +79,7 @@
       genre: 'Cantiga de festa junina',
       soundSnippetDescription: '🎵 Pista: Algo que sobe e desce no céu da festa.',
       culturalNote: 'Cantiga de São João sobre o balão que cai e anima a festa.',
-      melody: [ { note: 'C5', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'A4', beats: 1 }, { note: 'A4', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'C5', beats: 0.5 }, { note: 'A4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'F4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.75 }, { note: 'F4', beats: 0.25 }, { note: 'E4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.75 }, { note: 'F4', beats: 0.25 }, { note: 'E4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'A4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'F4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 1 } ],
       bpm: 96,
     },
     {
@@ -87,7 +89,7 @@
       genre: 'Cantiga de roda',
       soundSnippetDescription: '🎵 Pista: Uma erva cheirosa semeada no campo.',
       culturalNote: 'Cantiga tradicional que fala do alecrim, uma erva de cheiro.',
-      melody: [ { note: 'E4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'G4', beats: 2 }, { note: 'E4', beats: 1 }, { note: 'G4', beats: 1 }, { note: 'A4', beats: 2 }, { note: 'G4', beats: 1 }, { note: 'E4', beats: 1 }, { note: 'D4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 0.5 }, { note: 'F4', beats: 0.5 }, { note: 'E4', beats: 1 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 0.5 }, { note: 'E4', beats: 1 }, { note: 'G4', beats: 0.5 }, { note: 'F4', beats: 0.5 }, { note: 'F4', beats: 2 } ],
       bpm: 96,
     },
     {
@@ -97,7 +99,7 @@
       genre: 'Cantiga de marcha',
       soundSnippetDescription: '🎵 Pista: Uma marcha com cabeça de papel.',
       culturalNote: 'Cantiga de marcha infantil, boa para bater o pé no ritmo.',
-      melody: [ { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 1 }, { note: 'E4', beats: 1 }, { note: 'E4', beats: 1 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'A4', beats: 1 }, { note: 'G4', beats: 2 } ],
+      melody: [ { note: 'G4', beats: 1 }, { note: 'G4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'C4', beats: 1 }, { note: 'C4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'G4', beats: 0.5 }, { note: 'E4', beats: 0.5 }, { note: 'D4', beats: 1.5 } ],
       bpm: 96,
     },
   ];

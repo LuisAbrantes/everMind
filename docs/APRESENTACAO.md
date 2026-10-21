@@ -8,7 +8,7 @@ Dica: use a janela do navegador estreita (modo celular, F12 → ícone de dispos
 1. **Boas-vindas (30 s)** — 3 passos, nome opcional, "Seus dados ficam só neste aparelho". Mostre o "Pular".
 2. **Hoje (45 s)** — Tríade do Dia: *exatamente 3 metas* acolhedoras; Cérebro Virtual (Bebê → Mestre, nunca regride); mensagem gentil, sem culpa.
 3. **Mente (60 s)** — jogue a Sequência Lógica errando uma vez (dica gentil, sem vermelho) e depois acertando: +10 pontos, a Tríade avança sozinha.
-   Mostre o Jogo Musical (toque em OUVIR; som no aparelho ligado).
+   Mostre o Jogo Musical (toque em OUVIR; ative o som em Ajustes).
 4. **Corpo e Cuidado (45 s)** — caminhada (cronômetro opcional, sem pressão), água (uma recompensa ao atingir a meta), prato colorido, boa noite.
 5. **Mais → Afeto / Descobrir / Semana (60 s)** — "Surpreender-me" (34 descobertas, sem repetir em 7 dias); Semana mostra só conquistas, com emblemas.
 6. **Ajustes (30 s)** — texto A−/A/A+, som e vibração, privacidade.
@@ -21,6 +21,6 @@ Dica: use a janela do navegador estreita (modo celular, F12 → ícone de dispos
 - 534 testes automatizados (Chromium + WebKit) — `cd web/tests && npm install && npm test`.
 
 ## Limitações honestas (se perguntarem)
-- Melodias do jogo musical foram transcritas de memória: ouvir antes de apresentar.
+- Melodias do jogo musical: conferidas contra partituras/cifras públicas, mas nunca ouvidas por uma pessoa; o ritmo de Alecrim Dourado e O Cravo é aproximado. Ouça antes de apresentar.
 - Dados ficam só no aparelho (não há conta/nuvem ativa por padrão).
 - Som/vibração no iPhone real ainda não foi testado em aparelho.

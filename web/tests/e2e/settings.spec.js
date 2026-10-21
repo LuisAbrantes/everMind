@@ -12,7 +12,7 @@ test('Ajustes: name is saved and used in the greeting; font size toggles', async
 
   await goTab(page, 'Ajustes');
   const before = await page.evaluate(() => getComputedStyle(document.documentElement).fontSize);
-  await page.getByRole('button', { name: /A\+, texto maior/ }).click();
+  await page.getByRole('button', { name: /Maior, texto maior/ }).click();
   const after = await page.evaluate(() => getComputedStyle(document.documentElement).fontSize);
   expect(parseFloat(after)).toBeGreaterThan(parseFloat(before));
   await page.reload();

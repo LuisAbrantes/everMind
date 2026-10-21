@@ -271,7 +271,7 @@
       categoryLabel: 'Palavra Nova',
       categoryIcon: '📝',
       title: "Descubra a palavra: \"Jabuticaba\"",
-      description: "Vem do tupi: yabuti, \"tartaruga\", e kaba, \"lugar\", algo como \"lugar de tartarugas\" ou \"fruta que se come em cachos\".",
+      description: "Uma das explicações mais aceitas diz que vem do tupi: yabuti, \"tartaruga\", e kaba, \"lugar\" — algo como \"lugar de tartarugas\". Há outras explicações, e a origem exata é discutida.",
       practicalTip: "Se puder, prove uma. O sabor é inconfundível.",
     },
     {

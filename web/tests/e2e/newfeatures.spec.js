@@ -30,26 +30,26 @@ test.describe('Settings', () => {
     expect(await page.getByRole('switch').evaluateAll((els) => els.map((e) => e.getAttribute('aria-checked')))).toEqual(states);
   });
 
-  test('text size A-/A/A+ sets html font-size 100/115/130% and persists', async ({ page }) => {
+  test('text size Normal/Grande/Maior sets html font-size 100/115/130% and persists', async ({ page }) => {
     await openApp(page);
     await goTab(page, 'Ajustes');
     const fs = () => page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize));
     const base = await fs();
-    await page.getByRole('button', { name: /^A, texto médio/ }).click();
+    await page.getByRole('button', { name: /^Grande, texto grande/ }).click();
     expect(await fs()).toBeCloseTo(base * 1.15, 0);
-    await page.getByRole('button', { name: /^A\+, texto maior/ }).click();
+    await page.getByRole('button', { name: /^Maior, texto maior/ }).click();
     expect(await fs()).toBeCloseTo(base * 1.3, 0);
     await page.reload();
     expect(await fs()).toBeCloseTo(base * 1.3, 0);
     await goTab(page, 'Ajustes');
-    await page.getByRole('button', { name: /^A−, texto menor/ }).click();
+    await page.getByRole('button', { name: /^Normal, texto normal/ }).click();
     expect(await fs()).toBeCloseTo(base, 0);
   });
 
   test('text size 130%: no horizontal overflow and tap targets OK on every screen and game', async ({ page }) => {
     await openApp(page);
     await goTab(page, 'Ajustes');
-    await page.getByRole('button', { name: /^A\+, texto maior/ }).click();
+    await page.getByRole('button', { name: /^Maior, texto maior/ }).click();
     for (const label of [...TABS.map((t) => t.label), 'Mais', 'Ajustes']) {
       await goTab(page, label);
       await page.locator('#screen h1, #screen h2').first().waitFor();
