@@ -42,6 +42,8 @@ function start() {
       resolve({
         url: `http://127.0.0.1:${server.address().port}`,
         close: () => new Promise((r) => server.close(r)),
+        // derruba de verdade (inclusive conexões keep-alive): simula ficar sem rede
+        kill: () => new Promise((r) => { server.closeAllConnections(); server.close(r); }),
       });
     });
   });

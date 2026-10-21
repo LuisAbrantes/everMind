@@ -16,6 +16,7 @@
    ========================================================================== */
 
 /* Troque a versão a cada deploy: o activate apaga os caches antigos. */
+var NAVIGATION_TIMEOUT_MS = 3000;
 var CACHE_NAME = 'evermind-2026-10-21c';
 
 /* O app shell completo. `index.html` entra para que a navegação offline
@@ -123,23 +124,40 @@ self.addEventListener('fetch', function (event) {
   // Nunca intercepta chamadas de API — são escritas de verdade.
   if (url.pathname.indexOf('/rest/v1/') >= 0) return;
 
-  // Navegação: responde com o index.html cacheado (app shell).
+  // Navegação: rede primeiro, mas com limite de tempo. Sem rede, ou com rede
+  // lenta/instável ("lie-fi"), o app abre pelo cache em vez de ficar pendurado.
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(function (response) {
-          var copy = response.clone();
-          caches.open(CACHE_NAME).then(function (cache) {
-            cache.put('./index.html', copy);
-          });
-          return response;
-        })
-        .catch(function () {
-          return caches.match('./index.html').then(function (cached) {
-            return cached || caches.match('./');
-          });
-        })
-    );
+    event.respondWith(new Promise(function (resolve) {
+      var settled = false;
+      function fromCache() {
+        return caches.match('./index.html').then(function (cached) {
+          return cached || caches.match('./');
+        });
+      }
+      function settle(response) {
+        if (settled || !response) return;
+        settled = true;
+        resolve(response);
+      }
+      var timer = setTimeout(function () {
+        fromCache().then(settle);
+      }, NAVIGATION_TIMEOUT_MS);
+
+      fetch(request).then(function (response) {
+        clearTimeout(timer);
+        var copy = response.clone();
+        caches.open(CACHE_NAME).then(function (cache) {
+          cache.put('./index.html', copy);
+        });
+        settle(response);
+      }).catch(function () {
+        clearTimeout(timer);
+        fromCache().then(function (cached) {
+          if (cached) settle(cached);
+          else if (!settled) { settled = true; resolve(Response.error()); }
+        });
+      });
+    }));
     return;
   }
 

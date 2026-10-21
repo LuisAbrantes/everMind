@@ -19,7 +19,8 @@ for (const engine of ENGINES) {
     projects.push({
       name: `${engine.name}-${vp.tag}`,
       // The offline spec needs a Chromium service worker + context.setOffline.
-      testIgnore: engine.name === 'webkit' ? /offline\.spec\.js$/ : undefined,
+      // O offline do WebKit não usa setOffline (instável no Playwright): derruba o servidor de verdade.
+      testIgnore: engine.name === 'webkit' ? /offline\.spec\.js$/ : /offline-webkit\.spec\.js$/,
       use: {
         ...engine.device,
         browserName: engine.browserName,
