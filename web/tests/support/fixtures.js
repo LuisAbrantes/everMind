@@ -44,6 +44,14 @@ const test = base.test.extend({
  */
 async function openApp(page, { time = FIXED_TIME, clock = true, onboarding = false } = {}) {
   if (clock) await page.clock.install({ time: new Date(time) });
+  // Testes nunca devem fazer barulho na máquina de quem os roda.
+  await page.addInitScript(() => {
+    try {
+      if (localStorage.getItem('evermind:settings_sound') == null) {
+        localStorage.setItem('evermind:settings_sound', 'false');
+      }
+    } catch (e) { /* ignore */ }
+  });
   if (!onboarding) {
     await page.addInitScript(() => {
       try {

@@ -29,6 +29,7 @@ for (const engine of ENGINES) {
         deviceScaleFactor: 2,
         locale: 'pt-BR',
         timezoneId: 'America/Sao_Paulo',
+        launchOptions: { args: engine.name === 'chromium' ? ['--mute-audio'] : [] },
         serviceWorkers: 'block', // overridden to 'allow' in offline.spec.js
       },
     });

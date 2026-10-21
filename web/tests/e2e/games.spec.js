@@ -139,8 +139,19 @@ test.describe('minigames: wrong answer then correct answer awards +1 challenge /
     await expectAwarded(page, before);
   });
 
+  test('5a. Music with sound off shows the gentle hint to enable it in Ajustes', async ({ page }) => {
+    await openApp(page); // fixtures keep sound off
+    await openGame(page, 'MUSIC');
+    await expect(page.getByText(/ative-o em Ajustes/i)).toBeVisible();
+  });
+
   test('5b. Music playback toggle works (play <-> pause)', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('evermind:settings_sound', 'true'));
     await openApp(page);
+    // UI-only check: replace real audio with a silent fake so no sound plays on the dev machine.
+    await page.evaluate(() => {
+      EM.audio.playNotes = (notes, opts) => ({ stop() { if (opts && opts.onEnd) opts.onEnd(); } });
+    });
     await openGame(page, 'MUSIC');
     await page.getByRole('button', { name: /OUVIR/ }).click();
     await expect(page.getByRole('button', { name: /PARAR|PAUSAR/ })).toHaveAttribute('aria-pressed', 'true');
